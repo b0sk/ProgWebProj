@@ -5,11 +5,13 @@
  */
 package db;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Patrik
  */
-public class Utente {
+public class Utente implements Serializable {
     private int idUtente;
     private String email;
     private String password;

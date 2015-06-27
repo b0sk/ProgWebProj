@@ -5,11 +5,13 @@
  */
 package db;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Patrik
  */
-public class Film {
+public class Film implements Serializable {
     private int idFilm;
     private String titolo;
     private int idGenere;

@@ -5,11 +5,13 @@
  */
 package db;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Patrik
  */
-public class Prezzo {
+public class Prezzo implements Serializable {
     private int idPrezzo;
     private String tipo;
     private double prezzo;
