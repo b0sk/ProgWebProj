@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="page" value="home"/>
 
@@ -21,52 +21,22 @@
     <body>
         <h1>Film disponibili:</h1>
         
-        <!-- Film Box -->
+        <!-- Film Box --> 
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <div class="thumbnail">
-                    <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="..">
-                    <div class="caption">
-                        <h3>Thumbnail label</h3>
-                        <p>.......</p>
-                        <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
+            <c:forEach items="${requestScope.films}" var="film">                
+                <div class="col-md-4 col-sm-6">
+                    <div class="thumbnail">
+                        <!--img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt=""-->
+                        <img src="${film.uriLocandina}" alt="">
+                        <div class="caption">
+                            <h3><c:out value="${film.titolo}"></c:out></h3>
+                            <p><c:out value="${film.trama}"></c:out></p>
+                            <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="col-md-4 col-sm-6">
-                <div class="thumbnail">
-                    <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="..">
-                    <div class="caption">
-                        <h3>Thumbnail label</h3>
-                        <p>.......</p>
-                        <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 col-sm-6">
-                <div class="thumbnail">
-                    <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="..">
-                    <div class="caption">
-                        <h3>Thumbnail label</h3>
-                        <p>.......</p>
-                        <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4 col-sm-6">
-                <div class="thumbnail">
-                    <img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt="..">
-                    <div class="caption">
-                        <h3>Thumbnail label</h3>
-                        <p>.......</p>
-                        <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
-                    </div>
-                </div>
-            </div>
-            
+            </c:forEach>
         </div>
+        
     </body>
 </html>
