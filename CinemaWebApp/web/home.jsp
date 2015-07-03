@@ -27,11 +27,9 @@
                 <div class="col-md-4 col-sm-6">
                     <div class="thumbnail">
                         <!--img src="http://budapesttimes.hu/wp-content/themes/newsroom14/img/placeholder.png" alt=""-->
-                        <img src="${film.uriLocandina}" alt="">
+                        <img src="${film.uriLocandina}" alt="" style="height: 500px">
                         <div class="caption">
                             <h3><c:out value="${film.titolo}"></c:out></h3>
-                            <p><c:out value="${film.trama}"></c:out></p>
-                            <p><a href="#" class="btn btn-primary" role="button">Button</a></p>
                         </div>
                     </div>
                 </div>
