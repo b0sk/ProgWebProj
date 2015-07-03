@@ -1,0 +1,12 @@
+INSERT INTO GENERE (ID_GENERE, DESCRIZIONE) VALUES
+(1, 'commedia'),
+(2, 'fantastico'),
+(3, 'drammatico'),
+(4, 'horror'),
+(5, 'azione'),
+(6, 'avventura'),
+(7, 'animazione'),
+(8, 'musicale');
+
+
+

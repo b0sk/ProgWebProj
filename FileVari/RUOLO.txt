@@ -1,0 +1,6 @@
+INSERT INTO RUOLO (ID_RUOLO, RUOLO) VALUES
+(1, 'amministratore'),
+(2, 'utente');
+
+
+

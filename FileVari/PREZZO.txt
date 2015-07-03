@@ -1,0 +1,5 @@
+INSERT INTO PREZZO (ID_PREZZO, TIPO, PREZZO) VALUES
+(1, 'normale', 10),
+(2, 'ridotto', 7),
+(3, 'militari', 5),
+(4, 'disabili', 4);
