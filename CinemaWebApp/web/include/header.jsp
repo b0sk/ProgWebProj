@@ -21,7 +21,6 @@
 <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <!-- Optional Bootstrap theme -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="../bootstrap/css/bootstrap-theme.min.css">
 
 
 <nav class="navbar navbar-default">
