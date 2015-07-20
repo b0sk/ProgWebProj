@@ -63,7 +63,7 @@ public class RegistrazioneServlet extends HttpServlet {
                     boolean success = manager.registraUtente(email, password1);
                     if (success == true) {
                         request.setAttribute("errorCode", 0);
-                        request.getRequestDispatcher("login.jsp").forward(request, response);
+                        request.getRequestDispatcher("registrato.jsp").forward(request, response);
 
                     } else {
                         request.setAttribute("errorCode", 3);
