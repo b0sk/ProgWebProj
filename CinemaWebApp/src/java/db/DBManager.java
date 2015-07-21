@@ -61,6 +61,7 @@ public class DBManager implements Serializable {
             try {
                 while (rs.next()) {
                     Film f = new Film();
+                    f.setIdFilm(rs.getInt("ID_FILM"));
                     f.setTitolo(rs.getString("TITOLO"));
                     f.setTrama(rs.getString("TRAMA"));
                     f.setDurata(rs.getInt("DURATA"));
