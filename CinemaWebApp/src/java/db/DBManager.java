@@ -223,5 +223,41 @@ public class DBManager implements Serializable {
         return retval;
 
     }
+    
+    /**
+     * Autentica un utente in base a un nome utente e a una password
+     * 
+     * @param email l'email dell'utente
+     * @param password la password
+     * @return null se l'utente non è autenticato, un oggetto User se l'utente esiste ed è autenticato
+     */
 
+    public Utente authenticateUtente(String email, String password) throws SQLException {
+        
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ? AND password = ?");
+        try {
+            stm.setString(1, email);
+            stm.setString(2, password);
+            
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                if (rs.next()) {
+                    Utente user = new Utente();
+                    user.setIdUtente(rs.getInt("ID_UTENTE"));
+                    user.setEmail(email);
+                    user.setPassword("PASSWORD");
+                    user.setIdRuolo(rs.getInt("ID_RUOLO"));
+                    user.setCredito(rs.getDouble("CREDITO"));
+                    return user;
+                } else {
+                    return null;
+                }
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
 }
