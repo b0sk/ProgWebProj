@@ -65,6 +65,7 @@ public class DBManager implements Serializable {
                     f.setTitolo(rs.getString("TITOLO"));
                     f.setTrama(rs.getString("TRAMA"));
                     f.setDurata(rs.getInt("DURATA"));
+                    f.setIdGenere(rs.getInt("ID_GENERE"));
                     f.setUriLocandina(rs.getString("URI_LOCANDINA"));
                     f.setUrlTrailer(rs.getString("URL_TRAILER"));
 
@@ -96,12 +97,14 @@ public class DBManager implements Serializable {
             ResultSet rs = stm.executeQuery();
             try {
                 rs.next();
+                film.setIdFilm(rs.getInt("ID_FILM"));
                 film.setTitolo(rs.getString("TITOLO"));
                 film.setTrama(rs.getString("TRAMA"));
                 film.setDurata(rs.getInt("DURATA"));
+                film.setIdGenere(rs.getInt("ID_GENERE"));
                 film.setUriLocandina(rs.getString("URI_LOCANDINA"));
                 film.setUrlTrailer(rs.getString("URL_TRAILER"));
-            } catch(SQLException e){
+            } catch (SQLException e) {
                 return null;
             } finally {
                 rs.close();
@@ -112,9 +115,41 @@ public class DBManager implements Serializable {
 
         return film;
     }
-    
+
     /**
-     * Restituisce una lista di spettacoli per un determinato film in base al suo ID
+     * Questa funzione ritorna un oggetto Genere sapendo il suo ID
+     *
+     * @param idGenere ID del genere da ottenere
+     * @return l'oggetto genere, opure null se non c'è un genere con tale ID
+     * @throws SQLException
+     */
+    public Genere getGenereById(int idGenere) throws SQLException {
+        Genere genere = new Genere();
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Genere WHERE ID_GENERE = ?");
+        try {
+            stm.setString(1, Integer.toString(idGenere));
+            ResultSet rs = stm.executeQuery();
+            try {
+                rs.next();
+                genere.setIdGenere(rs.getInt("ID_GENERE"));
+                genere.setDescrizione(rs.getString("DESCRIZIONE"));
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return genere;
+
+    }
+
+    /**
+     * Restituisce una lista di spettacoli per un determinato film in base al
+     * suo ID
      *
      * @param idFilm ID del film
      * @return una lista di spettacoli, opure null se non ci sono spettacoli
@@ -137,7 +172,7 @@ public class DBManager implements Serializable {
 
                     spettacoli.add(s);
                 }
-            } catch(SQLException e){
+            } catch (SQLException e) {
                 return null;
             } finally {
                 rs.close();
