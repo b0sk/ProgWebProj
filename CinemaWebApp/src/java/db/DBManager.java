@@ -83,7 +83,7 @@ public class DBManager implements Serializable {
      * Ottiene un Film dal DB in base al suo ID
      *
      * @param idFilm ID del film da ottenere
-     * @return Film desiderato
+     * @return Film desiderato, opure null se non c'è un film con tale ID
      * @throws SQLException
      */
     public Film getFilmById(String idFilm) throws SQLException {
@@ -100,6 +100,8 @@ public class DBManager implements Serializable {
                 film.setDurata(rs.getInt("DURATA"));
                 film.setUriLocandina(rs.getString("URI_LOCANDINA"));
                 film.setUrlTrailer(rs.getString("URL_TRAILER"));
+            } catch(SQLException e){
+                return null;
             } finally {
                 rs.close();
             }
@@ -110,6 +112,13 @@ public class DBManager implements Serializable {
         return film;
     }
     
+    /**
+     * Restituisce una lista di spettacoli per un determinato film in base al suo ID
+     *
+     * @param idFilm ID del film
+     * @return una lista di spettacoli, opure null se non ci sono spettacoli
+     * @throws SQLException
+     */
     public List<Spettacolo> getSpettacoli(String idFilm) throws SQLException {
         List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
 
@@ -127,6 +136,8 @@ public class DBManager implements Serializable {
 
                     spettacoli.add(s);
                 }
+            } catch(SQLException e){
+                return null;
             } finally {
                 rs.close();
             }
