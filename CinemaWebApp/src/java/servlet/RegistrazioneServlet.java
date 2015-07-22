@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlet;
 
 import db.DBManager;
@@ -47,7 +42,7 @@ public class RegistrazioneServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             if (request.getParameter("inputEmail") == null || request.getParameter("inputPassword") == null || request.getParameter("repeatPassword") == null) {
-                request.setAttribute("errorCode", 1);
+                request.setAttribute("errorMessage", "Tutti i campi devono essere compilati!");
                 request.getRequestDispatcher("registrazione.jsp").forward(request, response);
             } else {
                 String email = request.getParameterValues("inputEmail")[0];
@@ -56,17 +51,17 @@ public class RegistrazioneServlet extends HttpServlet {
 
                 if (!password1.equals(password2)) {
                     //errore
-                    request.setAttribute("errorCode", 2);
+                    request.setAttribute("errorMessage", "Le password non corrispondono");
                     request.getRequestDispatcher("registrazione.jsp").forward(request, response);
                 } else {
                     // prova a registrare l'utente nel DB
                     boolean success = manager.registraUtente(email, password1);
                     if (success == true) {
-                        request.setAttribute("errorCode", 0);
+                        request.removeAttribute("errorMessage");//.setAttribute("errorCode", 0);
                         request.getRequestDispatcher("registrato.jsp").forward(request, response);
 
                     } else {
-                        request.setAttribute("errorCode", 3);
+                        request.setAttribute("errorMessage", "Email già in uso");
                         request.getRequestDispatcher("registrazione.jsp").forward(request, response);
                     }
                 }

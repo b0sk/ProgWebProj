@@ -19,22 +19,13 @@
 
     </head>
     <body>
-        <c:if test='${requestScope.errorCode == 1}'>
+        <c:if test='${requestScope.errorMessage != null}'>
             <div class="col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" id="erroreCampi">
-                <p style="color: #ff6666">Tutti i campi devono essere compilati!</p>
-            </div>
-        </c:if>
-        <c:if test='${requestScope.errorCode == 2}'>
-            <div class="col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" id="errorePassword">
-                <p style="color: #ff6666">Le password non corrispondono</p>
-            </div>
-        </c:if>
-        <c:if test='${requestScope.errorCode == 3}'>
-            <div class="col-md-4 col-md-offset-4 col-xs-10 col-xs-offset-1" id="errorePassword">
-                <p style="color: #ff6666">Email già in uso</p>
+                <p style="color: #ff6666">${requestScope.errorMessage}</p>
             </div>
         </c:if>
         
+        <!-- Script per controllo corrispondenza password -->
         <script type="text/javascript">
             function checkPwd() {
                 //Store the password field objects into variables ...
