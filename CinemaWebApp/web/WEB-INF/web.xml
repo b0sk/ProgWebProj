@@ -16,6 +16,10 @@
         <servlet-name>RepairpwdServlet</servlet-name>
         <servlet-class>servlet.RepairpwdServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PrezziServlet</servlet-name>
+        <servlet-class>servlet.PrezziServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>RepairpwdServlet</servlet-name>
         <url-pattern>/RepairpwdServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PrezziServlet</servlet-name>
+        <url-pattern>/PrezziServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

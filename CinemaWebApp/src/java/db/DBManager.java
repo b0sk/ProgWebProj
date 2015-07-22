@@ -291,4 +291,37 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
+    
+    /**
+     * Ottiene la lista di tutti i prezzi dal DB
+     *
+     * @return ArrayList contenente tutti i prezzi
+     * @throws SQLException
+     */
+    public List<Prezzo> getPrezzi() throws SQLException {
+        List<Prezzo> prezzi = new ArrayList<Prezzo>();
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Prezzo");
+        try {
+            ResultSet rs = stm.executeQuery();
+            try {
+                while (rs.next()) {
+                    Prezzo p = new Prezzo();
+                    p.setIdPrezzo(rs.getInt("ID_PREZZO"));
+                    p.setPrezzo(rs.getDouble("PREZZO"));
+                    p.setTipo(rs.getString("TIPO"));
+                
+                    prezzi.add(p);
+                }
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return prezzi;
+    }
+
+    
 }
