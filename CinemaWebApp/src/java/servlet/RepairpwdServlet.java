@@ -18,6 +18,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.RequestDispatcher;
 
 
 /**
@@ -59,17 +60,21 @@ public class RepairpwdServlet extends HttpServlet {
             // se l'utente non esiste, mostra un messaggio di errore
             if (utente == null) {
                 //manda messaggio di errore a rapairpwd.jsp
-                // metto il messaggio di errore come attributo di Request, così nel JSP si vede il messaggio
-                //request.setAttribute("message", "Email e/o password sbagliate!");
-                //RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
-                //rd.forward(request, response);
+                // metto il messaggio di errore come attributo di Request e lo inoltro a repairpwd.jsp
+                request.setAttribute("errorMessage", "Nessun utente è registrato con questa e-mail");
+                RequestDispatcher rd = request.getRequestDispatcher("/repairpwd.jsp");
+                rd.forward(request, response);
             } else {
                 //altrimenti invia l'email con la password
                 sendMail(email, utente.getPassword());
+                request.getRequestDispatcher("/repairpwdSucces.jsp").forward(request, response);
             }
 
         } else {
             //errore
+            request.setAttribute("errorMessage", "Parametro inputEmail non impostato");
+            RequestDispatcher rd = request.getRequestDispatcher("/repairpwd.jsp");
+            rd.forward(request, response);
         }
 
         response.setContentType("text/html;charset=UTF-8");

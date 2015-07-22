@@ -57,7 +57,7 @@ public class RegistrazioneServlet extends HttpServlet {
                     // prova a registrare l'utente nel DB
                     boolean success = manager.registraUtente(email, password1);
                     if (success == true) {
-                        request.removeAttribute("errorMessage");//.setAttribute("errorCode", 0);
+                        request.removeAttribute("errorMessage");
                         request.getRequestDispatcher("registrato.jsp").forward(request, response);
 
                     } else {
