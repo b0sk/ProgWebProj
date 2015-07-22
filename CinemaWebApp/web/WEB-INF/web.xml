@@ -12,6 +12,10 @@
         <servlet-name>DettagliServlet</servlet-name>
         <servlet-class>servlet.DettagliServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RepairpwdServlet</servlet-name>
+        <servlet-class>servlet.RepairpwdServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -19,6 +23,10 @@
     <servlet-mapping>
         <servlet-name>DettagliServlet</servlet-name>
         <url-pattern>/DettagliServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RepairpwdServlet</servlet-name>
+        <url-pattern>/RepairpwdServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

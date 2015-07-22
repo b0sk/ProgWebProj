@@ -223,15 +223,46 @@ public class DBManager implements Serializable {
         return retval;
 
     }
+    /**
+     * Ritorno un utente in base ad un email
+     * 
+     * @param email l'email dell'utente
+     * @return null se l'utente non esiste, un oggetto User se l'utente esiste
+     */
+    public Utente getUtente(String email) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ?");
+        try {
+            stm.setString(1, email);
+            
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                if (rs.next()) {
+                    Utente user = new Utente();
+                    user.setIdUtente(rs.getInt("ID_UTENTE"));
+                    user.setEmail(email);
+                    user.setPassword(rs.getString("PASSWORD"));
+                    user.setIdRuolo(rs.getInt("ID_RUOLO"));
+                    user.setCredito(rs.getDouble("CREDITO"));
+                    return user;
+                } else {
+                    return null;
+                }
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
     
     /**
-     * Autentica un utente in base a un nome utente e a una password
+     * Autentica un utente in base ad un email e ad una password
      * 
      * @param email l'email dell'utente
      * @param password la password
      * @return null se l'utente non è autenticato, un oggetto User se l'utente esiste ed è autenticato
      */
-
     public Utente authenticateUtente(String email, String password) throws SQLException {
         
         PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ? AND password = ?");
