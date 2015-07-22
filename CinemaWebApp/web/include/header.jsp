@@ -43,28 +43,28 @@
                         <p>${sessionScope.utente.getEmail()}</p>
                         <c:if test='${pageScope.page == "home"}'>
                             <li class="active"><a href="Home">Home<span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="#">Il mio account</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "prezzi"}'>
                             <li><a href="Home">Home</a></li>
-                            <li class="active"><a href="#">Prezzi<span class="sr-only">(current)</span></a></li>
+                            <li class="active"><a href="PrezziServlet">Prezzi<span class="sr-only">(current)</span></a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="#">Il mio account</a></li>
                             </c:if>
 
                         <c:if test='${pageScope.page == "contatti"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li class="active"><a href="contatti.jsp">Contatti<span class="sr-only">(current)</span></a></li>
                             <li><a href="#">Il mio account</a></li>
                             </c:if>
 
                         <c:if test='${pageScope.page == "mioaccount"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li class="active"><a href="#">Il mio account<span class="sr-only">(current)</span></a></li>
                         </c:if>
@@ -75,28 +75,28 @@
                         <p>${sessionScope.utente.getEmail()}</p>
                         <c:if test='${pageScope.page == "home"}'>
                             <li class="active"><a href="Home">Home<span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="#">Amministrazione</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "prezzi"}'>
                             <li><a href="Home">Home</a></li>
-                            <li class="active"><a href="#">Prezzi<span class="sr-only">(current)</span></a></li>
+                            <li class="active"><a href="PrezziServlet">Prezzi<span class="sr-only">(current)</span></a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="#">Amministrazione</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "contatti"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li class="active"><a href="contatti.jsp">Contatti<span class="sr-only">(current)</span></a></li>
                             <li><a href="#">Amministrazione</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "mioaccount"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li class="active"><a href="#">Amministrazione<span class="sr-only">(current)</span></a></li>
                         </c:if>
@@ -106,28 +106,28 @@
                     <!-- Menu per utente non loggato -->
                         <c:if test='${pageScope.page == "home"}'>
                             <li class="active"><a href="Home">Home<span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="login.jsp">Login</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "prezzi"}'>
                             <li><a href="Home">Home</a></li>
-                            <li class="active"><a href="#">Prezzi<span class="sr-only">(current)</span></a></li>
+                            <li class="active"><a href="PrezziServlet">Prezzi<span class="sr-only">(current)</span></a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li><a href="login.jsp">Login</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "contatti"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li class="active"><a href="contatti.jsp">Contatti<span class="sr-only">(current)</span></a></li>
                             <li><a href="login.jsp">Login</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "login"}'>
                             <li><a href="Home">Home</a></li>
-                            <li><a href="#">Prezzi</a></li>
+                            <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
                             <li class="active"><a href="login.jsp">Login<span class="sr-only">(current)</span></a></li>
                         </c:if>
