@@ -20,6 +20,14 @@
         <servlet-name>PrezziServlet</servlet-name>
         <servlet-class>servlet.PrezziServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PaginaUtenteServlet</servlet-name>
+        <servlet-class>servlet.PaginaUtenteServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>servlet.Logout</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -35,6 +43,14 @@
     <servlet-mapping>
         <servlet-name>PrezziServlet</servlet-name>
         <url-pattern>/PrezziServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PaginaUtenteServlet</servlet-name>
+        <url-pattern>/PaginaUtenteServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/Logout</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

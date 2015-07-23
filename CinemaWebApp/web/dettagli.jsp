@@ -1,9 +1,3 @@
-<%-- 
-    Document   : home
-    Created on : 24-giu-2015, 10.29.59
-    Author     : Patrik
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
