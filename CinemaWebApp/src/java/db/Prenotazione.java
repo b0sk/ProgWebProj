@@ -18,17 +18,17 @@ public class Prenotazione implements Serializable {
     private int idSpettacolo;
     private int idPrezzo;
     private int idPosto;
-    private Timestamp dataOraSpettacolo;
+    private Timestamp dataOraOperazione;
     
     public Prenotazione(){}
     
-    public Prenotazione(int idPrenotazione, int idUtente, int idSpettacolo, int idPrezzo, int idPosto, Timestamp dataOraSpettacolo){
+    public Prenotazione(int idPrenotazione, int idUtente, int idSpettacolo, int idPrezzo, int idPosto, Timestamp dataOraOperazione){
         this.idPrenotazione = idPrenotazione;
         this.idUtente = idUtente;
         this.idSpettacolo = idSpettacolo;
         this.idPrezzo = idPrezzo;
         this.idPosto = idPosto;
-        this.dataOraSpettacolo = dataOraSpettacolo;
+        this.dataOraOperazione = dataOraOperazione;
     }
 
     /**
@@ -102,16 +102,16 @@ public class Prenotazione implements Serializable {
     }
 
     /**
-     * @return the dataOraSpettacolo
+     * @return the dataOraOperazione
      */
-    public Timestamp getDataOraSpettacolo() {
-        return dataOraSpettacolo;
+    public Timestamp getDataOraOperazione() {
+        return dataOraOperazione;
     }
 
     /**
-     * @param dataOraSpettacolo the dataOraSpettacolo to set
+     * @param dataOraOperazione the dataOraOperazione to set
      */
-    public void setDataOraSpettacolo(Timestamp dataOraSpettacolo) {
-        this.dataOraSpettacolo = dataOraSpettacolo;
+    public void setDataOraOperazione(Timestamp dataOraOperazione) {
+        this.dataOraOperazione = dataOraOperazione;
     }
 }

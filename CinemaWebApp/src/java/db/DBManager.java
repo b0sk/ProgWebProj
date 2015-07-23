@@ -85,7 +85,7 @@ public class DBManager implements Serializable {
      * Ottiene un Film dal DB in base al suo ID
      *
      * @param idFilm ID del film da ottenere
-     * @return Film desiderato, opure null se non c'è un film con tale ID
+     * @return Film desiderato, oppure null se non c'è un film con tale ID
      * @throws SQLException
      */
     public Film getFilmById(String idFilm) throws SQLException {
@@ -120,7 +120,7 @@ public class DBManager implements Serializable {
      * Questa funzione ritorna un oggetto Genere sapendo il suo ID
      *
      * @param idGenere ID del genere da ottenere
-     * @return l'oggetto genere, opure null se non c'è un genere con tale ID
+     * @return l'oggetto genere, oppure null se non c'è un genere con tale ID
      * @throws SQLException
      */
     public Genere getGenereById(int idGenere) throws SQLException {
@@ -152,7 +152,7 @@ public class DBManager implements Serializable {
      * suo ID
      *
      * @param idFilm ID del film
-     * @return una lista di spettacoli, opure null se non ci sono spettacoli
+     * @return una lista di spettacoli, oppure null se non ci sono spettacoli
      * @throws SQLException
      */
     public List<Spettacolo> getSpettacoli(String idFilm) throws SQLException {
@@ -223,9 +223,10 @@ public class DBManager implements Serializable {
         return retval;
 
     }
+
     /**
      * Ritorno un utente in base ad un email
-     * 
+     *
      * @param email l'email dell'utente
      * @return null se l'utente non esiste, un oggetto User se l'utente esiste
      */
@@ -233,7 +234,7 @@ public class DBManager implements Serializable {
         PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ?");
         try {
             stm.setString(1, email);
-            
+
             ResultSet rs = stm.executeQuery();
 
             try {
@@ -255,21 +256,22 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Autentica un utente in base ad un email e ad una password
-     * 
+     *
      * @param email l'email dell'utente
      * @param password la password
-     * @return null se l'utente non è autenticato, un oggetto User se l'utente esiste ed è autenticato
+     * @return null se l'utente non è autenticato, un oggetto User se l'utente
+     * esiste ed è autenticato
      */
     public Utente authenticateUtente(String email, String password) throws SQLException {
-        
+
         PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ? AND password = ?");
         try {
             stm.setString(1, email);
             stm.setString(2, password);
-            
+
             ResultSet rs = stm.executeQuery();
 
             try {
@@ -291,7 +293,7 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Ottiene la lista di tutti i prezzi dal DB
      *
@@ -310,7 +312,7 @@ public class DBManager implements Serializable {
                     p.setIdPrezzo(rs.getInt("ID_PREZZO"));
                     p.setPrezzo(rs.getDouble("PREZZO"));
                     p.setTipo(rs.getString("TIPO"));
-                
+
                     prezzi.add(p);
                 }
             } finally {
@@ -322,6 +324,148 @@ public class DBManager implements Serializable {
 
         return prezzi;
     }
-
     
+    /**
+     * Restituisce un oggeto Prezzo in base al suo ID
+     *
+     * @param idPrezzp l'ID del prezzo
+     * @return un oggetto Prezzo, oppure null se non ci sono prezzi con l'id specificato
+     * @throws SQLException
+     */
+    public Prezzo getPrezzoById(int idPrezzo) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Prezzo WHERE ID_PREZZO = ?");
+        try {
+            stm.setString(1, Integer.toString(idPrezzo));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    Prezzo p = new Prezzo();
+                    p.setIdPrezzo(idPrezzo);
+                    p.setPrezzo(rs.getDouble("PREZZO"));
+                    p.setTipo(rs.getString("TIPO"));
+                    
+                    return p;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+    
+
+    //////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Restituisce una lista di prenotazioni di un determinato utente in base al
+     * suo ID
+     *
+     * @param idUtente ID dell'utente
+     * @return una lista di prenotazioni, oppure null se non ci sono prenotazioni
+     * @throws SQLException
+     */
+    public List<Prenotazione> getPrenotazioniUtente(int idUtente) throws SQLException {
+        List<Prenotazione> prenotazioni = new ArrayList<Prenotazione>();
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Prenotazione WHERE ID_UTENTE = ?");
+        try {
+            stm.setString(1, Integer.toString(idUtente));
+            ResultSet rs = stm.executeQuery();
+            try {
+                while (rs.next()) {
+                    Prenotazione p = new Prenotazione();
+                    p.setIdPrenotazione(rs.getInt("ID_PRENOTAZIONE"));
+                    p.setIdUtente(idUtente);
+                    p.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
+                    p.setIdPrezzo(rs.getInt("ID_PREZZO"));
+                    p.setIdPosto(rs.getInt("ID_POSTO"));
+                    p.setDataOraOperazione(rs.getTimestamp("DATA_ORA_OPERAZIONE"));
+
+                    prenotazioni.add(p);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return prenotazioni;
+    }
+
+    /**
+     * Restituisce un oggeto spettacolo in base al suo ID
+     *
+     * @param idSpettacolo l'ID dello spettacolo
+     * @return un oggetto Spettacolo, oppure null se non ci sono spettacoli con l'id specificato
+     * @throws SQLException
+     */
+    public Spettacolo getSpettacoloById(int idSpettacolo) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_SPETTACOLO = ?");
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    Spettacolo s = new Spettacolo();
+                    s.setIdSpettacolo(idSpettacolo);
+                    s.setIdFilm(rs.getInt("ID_FILM"));
+                    s.setDataOra(rs.getTimestamp("DATA_ORA"));
+                    s.setIdSala(rs.getInt("ID_SALA"));
+
+                    return s;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+    
+    /**
+     * Restituisce un oggeto Sala in base al suo ID
+     *
+     * @param idSala l'ID della sala
+     * @return un oggetto Sala, oppure null se non ci sono sale con l'id specificato
+     * @throws SQLException
+     */
+    public Sala getSalaById(int idSala) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Sala WHERE ID_SALA = ?");
+        try {
+            stm.setString(1, Integer.toString(idSala));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    Sala s = new Sala();
+                    s.setIdSala(idSala);
+                    s.setDescrizione(rs.getString("DESCRIZIONE"));
+
+                    return s;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+
 }
