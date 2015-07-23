@@ -50,7 +50,7 @@
                             <td>${prenotazioneUtente.sala}</td>
                             <td>${prenotazioneUtente.idPosto}</td>
                             <td>${prenotazioneUtente.dataOra}</td>
-                            <td>${prenotazioneUtente.prezzo}</td>
+                            <td>${prenotazioneUtente.prezzo} €</td>
                         </tr>
                     </c:forEach>
 

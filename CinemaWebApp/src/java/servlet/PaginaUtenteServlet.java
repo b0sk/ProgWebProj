@@ -82,6 +82,7 @@ public class PaginaUtenteServlet extends HttpServlet {
         rd.forward(request, response);
     }
 
+// TO-DO: aggiungere commenti alle funzioni    
     private String getTitoloFilm(int idSpettacolo) throws SQLException {
         Spettacolo spettacolo = manager.getSpettacoloById(idSpettacolo);
         Film film = manager.getFilmById(Integer.toString(spettacolo.getIdFilm()));
