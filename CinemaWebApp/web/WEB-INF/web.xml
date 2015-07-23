@@ -28,6 +28,10 @@
         <servlet-name>Logout</servlet-name>
         <servlet-class>servlet.Logout</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AmministrazioneServlet</servlet-name>
+        <servlet-class>servlet.AmministrazioneServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -51,6 +55,10 @@
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
         <url-pattern>/Logout</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AmministrazioneServlet</servlet-name>
+        <url-pattern>/AmministrazioneServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
