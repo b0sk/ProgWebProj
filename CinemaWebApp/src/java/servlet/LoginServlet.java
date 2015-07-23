@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlet;
 
 import db.DBManager;
 import db.Utente;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -48,15 +42,6 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("inputEmail");
         String password = request.getParameter("inputPassword");
 
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-
             /* controlla nel DB se esiste l'utente (email+password) e autenticalo */
             Utente user;
             try {
@@ -68,13 +53,11 @@ public class LoginServlet extends HttpServlet {
             }
             // se non esiste, ridirigo verso pagina di login con messaggio di errore
             if (user == null) {
-                //out.println("<h1>UTENTE NULL<h1>");
                 // metto il messaggio di errore come attributo di Request, così nel JSP si vede il messaggio
                 request.setAttribute("message", "Email e/o password sbagliate!");
                 RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
                 rd.forward(request, response);
             } else {
-                out.println("<h1>UTENTE NON NULL<h1>");
                 // imposto l'utente connesso come attributo di sessione
                 HttpSession session = request.getSession(true);
                 session.setAttribute("utente", user);
@@ -82,11 +65,6 @@ public class LoginServlet extends HttpServlet {
                 // mando un redirect alla servlet che carica i prodotti
                 response.sendRedirect(request.getContextPath() + "/Home");
             }
-
-            out.println("<h1>email: " + email + " Password: " + password + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
