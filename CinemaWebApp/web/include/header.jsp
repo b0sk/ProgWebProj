@@ -1,4 +1,4 @@
-<!-- TODO: fixare link Prezzi, Il mio account e Amministrazione -->
+<!-- TODO: fixare link Prezzi, Amministrazione -->
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -45,28 +45,28 @@
                             <li class="active"><a href="Home">Home<span class="sr-only">(current)</span></a></li>
                             <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
-                            <li><a href="#">Il mio account</a></li>
+                            <li><a href="PaginaUtenteServlet">Il mio account</a></li>
                         </c:if>
 
                         <c:if test='${pageScope.page == "prezzi"}'>
                             <li><a href="Home">Home</a></li>
                             <li class="active"><a href="PrezziServlet">Prezzi<span class="sr-only">(current)</span></a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
-                            <li><a href="#">Il mio account</a></li>
+                            <li><a href="PaginaUtenteServlet">Il mio account</a></li>
                             </c:if>
 
                         <c:if test='${pageScope.page == "contatti"}'>
                             <li><a href="Home">Home</a></li>
                             <li><a href="PrezziServlet">Prezzi</a></li>
                             <li class="active"><a href="contatti.jsp">Contatti<span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Il mio account</a></li>
+                            <li><a href="PaginaUtenteServlet">Il mio account</a></li>
                             </c:if>
 
                         <c:if test='${pageScope.page == "mioaccount"}'>
                             <li><a href="Home">Home</a></li>
                             <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
-                            <li class="active"><a href="#">Il mio account<span class="sr-only">(current)</span></a></li>
+                            <li class="active"><a href="PaginaUtenteServlet">Il mio account<span class="sr-only">(current)</span></a></li>
                         </c:if>
                     </c:when>
                     
@@ -94,7 +94,7 @@
                             <li><a href="#">Amministrazione</a></li>
                         </c:if>
 
-                        <c:if test='${pageScope.page == "mioaccount"}'>
+                        <c:if test='${pageScope.page == "amministrazione"}'>
                             <li><a href="Home">Home</a></li>
                             <li><a href="PrezziServlet">Prezzi</a></li>
                             <li><a href="contatti.jsp">Contatti</a></li>
