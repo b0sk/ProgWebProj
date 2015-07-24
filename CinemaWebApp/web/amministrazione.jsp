@@ -12,7 +12,7 @@
         <%@ include file="include/header.jsp" %>
 
         <c:set var="utente" value="${sessionScope.utente}" />
-        
+
     </head>
     <body>
         <div class="container">
@@ -20,15 +20,38 @@
                 <div class="col-xs-8">
                     <h3>${utente.email}</h3>
                     <h4>Credito: ${utente.credito} €</h4>
-                    
+
                 </div>
-                
+
                 <div class="col-xs-2 col-xs-offset-2">
                     <h3><a href="Logout">Logout</a></h3>
                 </div>
-                
+
             </div>
-        </div>
-                
-    </body>
+
+        <br>
+                    
+        <h3>Incassi Film:</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Film</th>
+                    <th>Incasso</th>
+                </tr>    
+            </thead>
+            <tbody>
+                <!--c:forEach items="${requestScope.incassiFilm}" var="incassoFilm"-->                
+                <tr>
+                    <td>forrest gump</td>
+                    <td>${requestScope.incasso} €</td>
+                </tr>
+                <!--/c:forEach-->
+
+            </tbody>
+        </table>
+
+
+    </div>
+
+</body>
 </html>

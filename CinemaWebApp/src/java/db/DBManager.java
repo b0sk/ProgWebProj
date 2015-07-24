@@ -324,12 +324,13 @@ public class DBManager implements Serializable {
 
         return prezzi;
     }
-    
+
     /**
      * Restituisce un oggeto Prezzo in base al suo ID
      *
      * @param idPrezzp l'ID del prezzo
-     * @return un oggetto Prezzo, oppure null se non ci sono prezzi con l'id specificato
+     * @return un oggetto Prezzo, oppure null se non ci sono prezzi con l'id
+     * specificato
      * @throws SQLException
      */
     public Prezzo getPrezzoById(int idPrezzo) throws SQLException {
@@ -344,7 +345,7 @@ public class DBManager implements Serializable {
                     p.setIdPrezzo(idPrezzo);
                     p.setPrezzo(rs.getDouble("PREZZO"));
                     p.setTipo(rs.getString("TIPO"));
-                    
+
                     return p;
                 } else {
                     return null;
@@ -358,7 +359,6 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
 
     //////////////////////////////////////////////////////////////////////////////////
     /**
@@ -366,7 +366,8 @@ public class DBManager implements Serializable {
      * suo ID
      *
      * @param idUtente ID dell'utente
-     * @return una lista di prenotazioni, oppure null se non ci sono prenotazioni
+     * @return una lista di prenotazioni, oppure null se non ci sono
+     * prenotazioni
      * @throws SQLException
      */
     public List<Prenotazione> getPrenotazioniUtente(int idUtente) throws SQLException {
@@ -404,7 +405,8 @@ public class DBManager implements Serializable {
      * Restituisce un oggeto spettacolo in base al suo ID
      *
      * @param idSpettacolo l'ID dello spettacolo
-     * @return un oggetto Spettacolo, oppure null se non ci sono spettacoli con l'id specificato
+     * @return un oggetto Spettacolo, oppure null se non ci sono spettacoli con
+     * l'id specificato
      * @throws SQLException
      */
     public Spettacolo getSpettacoloById(int idSpettacolo) throws SQLException {
@@ -434,12 +436,13 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Restituisce un oggeto Sala in base al suo ID
      *
      * @param idSala l'ID della sala
-     * @return un oggetto Sala, oppure null se non ci sono sale con l'id specificato
+     * @return un oggetto Sala, oppure null se non ci sono sale con l'id
+     * specificato
      * @throws SQLException
      */
     public Sala getSalaById(int idSala) throws SQLException {
@@ -463,6 +466,48 @@ public class DBManager implements Serializable {
             } finally {
                 rs.close();
             }
+        } finally {
+            stm.close();
+        }
+    }
+
+    /**
+     * Restituisce l'incasso di un film, in base al suo ID
+     *
+     * @param idFilm l'ID del film
+     * @return L'incasso del film, oppure 0 se non esiste un film con l'id
+     * specificato
+     * @throws SQLException
+     */
+    public double getIncassoFilm(int idFilm) throws SQLException {
+
+        PreparedStatement stm
+                = con.prepareStatement("select films.id_film, sum(incassi.incasso) as incassoFilm "
+                        + "from "
+                        + "(select id_spettacolo, sum(prezzo) as incasso from APP.PRENOTAZIONE "
+                        + "left join APP.PREZZO on PREZZO.ID_PREZZO = PRENOTAZIONE.ID_PREZZO "
+                        + "group by id_spettacolo) as incassi "
+                        + "join "
+                        + "(select id_spettacolo, id_film "
+                        + "from spettacolo) as films "
+                        + "on incassi.id_spettacolo = films.id_spettacolo "
+                        + "group by films.id_film "
+                        + "having films.id_film = ?");
+        try {
+            stm.setString(1, Integer.toString(idFilm));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    return rs.getDouble("incassoFilm");
+                } else {
+                    return 0.0;
+                }
+            } finally {
+                rs.close();
+            }
+        } catch (SQLException e) {
+            //System.out.println(e);
+            return 0;
         } finally {
             stm.close();
         }
