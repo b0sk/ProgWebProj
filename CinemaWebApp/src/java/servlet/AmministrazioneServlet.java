@@ -55,7 +55,7 @@ public class AmministrazioneServlet extends HttpServlet {
 
             //response.sendRedirect(request.getContextPath() + "/amministrazione.jsp");
             // TODO: ottenere liste dal db e mostrarle nella jsp
-            double incasso = manager.getIncassoFilm(3);
+            double incasso = manager.getIncassoFilm(1);
 
             request.setAttribute("incasso", incasso);
             

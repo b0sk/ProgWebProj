@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package db;
 
 import java.io.Serializable;
@@ -472,6 +467,94 @@ public class DBManager implements Serializable {
     }
 
     /**
+     * Restituisce una lista di posti per un determinato spettacolo in base al
+     * suo ID
+     *
+     * @param idSpettacolo ID dello spettacolo
+     * @return una lista di posti, oppure null se non ci sono spettacoli con
+     * tale id
+     * @throws SQLException
+     */
+    public List<Posto> getPostiSpettacolo(int idSpettacolo) throws SQLException {
+        List<Posto> posti = new ArrayList<Posto>();
+
+        PreparedStatement stm = con.prepareStatement("select * from spettacolo "
+                + "left join sala on spettacolo.id_sala = sala.id_sala "
+                + "left join posto on posto.id_sala = sala.id_sala "
+                + "where id_spettacolo = ?");// esiste = true and id_spettacolo = ?
+
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                while (rs.next()) {
+                    Posto p = new Posto();
+                    p.setIdPosto(rs.getInt("ID_POSTO"));
+                    p.setIdSala(rs.getInt("ID_SALA"));
+                    p.setRiga(rs.getInt("RIGA"));
+                    p.setColonna(rs.getInt("COLONNA"));
+                    p.setEsiste(rs.getBoolean("ESISTE"));
+
+                    posti.add(p);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return posti;
+    }
+
+    /**
+     * Restituisce una lista di posti PRENRENOTATI per un determinato spettacolo
+     * in base al suo ID
+     *
+     * @param idSpettacolo ID dello spettacolo
+     * @return una lista di posti liberi, oppure null se non ci sono posti
+     * liberi
+     * @throws SQLException
+     */
+    public List<Posto> getPostiPrenotatiSpettacolo(int idSpettacolo) throws SQLException {
+        List<Posto> posti = new ArrayList<Posto>();
+
+        PreparedStatement stm = con.prepareStatement("select * from APP.PRENOTAZIONE "
+                + "left join APP.POSTO on PRENOTAZIONE.ID_POSTO = POSTO.ID_POSTO "
+                + "where id_spettacolo = ?");
+
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                while (rs.next()) {
+                    Posto p = new Posto();
+                    p.setIdPosto(rs.getInt("ID_POSTO"));
+                    p.setIdSala(rs.getInt("ID_SALA"));
+                    p.setRiga(rs.getInt("RIGA"));
+                    p.setColonna(rs.getInt("COLONNA"));
+                    p.setEsiste(rs.getBoolean("ESISTE"));
+
+                    posti.add(p);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return posti;
+    }
+
+    /////////////// da correggere //////////////////////////////////////////////
+    /**
      * Restituisce l'incasso di un film, in base al suo ID
      *
      * @param idFilm l'ID del film
@@ -482,23 +565,31 @@ public class DBManager implements Serializable {
     public double getIncassoFilm(int idFilm) throws SQLException {
 
         PreparedStatement stm
-                = con.prepareStatement("select films.id_film, sum(incassi.incasso) as incassoFilm "
-                        + "from "
-                        + "(select id_spettacolo, sum(prezzo) as incasso from APP.PRENOTAZIONE "
-                        + "left join APP.PREZZO on PREZZO.ID_PREZZO = PRENOTAZIONE.ID_PREZZO "
-                        + "group by id_spettacolo) as incassi "
-                        + "join "
-                        + "(select id_spettacolo, id_film "
-                        + "from spettacolo) as films "
-                        + "on incassi.id_spettacolo = films.id_spettacolo "
-                        + "group by films.id_film "
-                        + "having films.id_film = ?");
+                = con.prepareStatement(/*"select films.id_film, sum(incassi.incasso) as incassoFilm "
+                         + "from "
+                         + "(select id_spettacolo, sum(prezzo) as incasso from APP.PRENOTAZIONE "
+                         + "left join APP.PREZZO on PREZZO.ID_PREZZO = PRENOTAZIONE.ID_PREZZO "
+                         + "group by id_spettacolo) as incassi "
+                         + "join "
+                         + "(select id_spettacolo, id_film "
+                         + "from spettacolo) as films "
+                         + "on incassi.id_spettacolo = films.id_spettacolo "
+                         + "group by films.id_film "
+                         + "having films.id_film = ?"*/
+                        "select SPETTACOLO.ID_FILM, sum(prezzo) as incasso "
+                        + "from PRENOTAZIONE left join PREZZO on PREZZO.ID_PREZZO = PRENOTAZIONE.ID_PREZZO "
+                        + "left join SPETTACOLO on SPETTACOLO.ID_SPETTACOLO = PRENOTAZIONE.ID_SPETTACOLO "
+                        + "group by ID_FILM "
+                        + "having ID_FILM = ?");
         try {
             stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();
+            System.out.println("CIAOO");
             try {
                 if (rs.next()) {
-                    return rs.getDouble("incassoFilm");
+                    double ris = rs.getDouble("incasso");
+                    System.out.println(ris);
+                    return ris;
                 } else {
                     return 0.0;
                 }
@@ -507,10 +598,11 @@ public class DBManager implements Serializable {
             }
         } catch (SQLException e) {
             //System.out.println(e);
-            return 0;
+            return 0.0;
         } finally {
             stm.close();
         }
     }
+////////////////////////////////////////////////////////////////////////////////
 
 }
