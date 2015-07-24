@@ -32,6 +32,7 @@
             </div>
 
             <br>
+            
             <h3>Lista prenotazioni:</h3>
             <table class="table table-striped">
                 <thead>
@@ -49,18 +50,11 @@
                             <td>${prenotazioneUtente.titoloFilm}</td>
                             <td>${prenotazioneUtente.sala}</td>
                             <td>${prenotazioneUtente.idPosto}</td>
-                            <td>${prenotazioneUtente.dataOra}</td>
+                            <td><fmt:formatDate value="${prenotazioneUtente.dataOra}" type="BOTH" dateStyle="LONG" timeStyle="SHORT" /></td>
                             <td>${prenotazioneUtente.prezzo} €</td>
                         </tr>
                     </c:forEach>
 
-                    <tr>
-                        <td>..</td>
-                        <td>..</td>
-                        <td>..</td>
-                        <td>..</td>
-                        <td>..</td>
-                    </tr>
                 </tbody>
             </table>
         </div>

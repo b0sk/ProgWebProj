@@ -54,32 +54,39 @@ public class PaginaUtenteServlet extends HttpServlet {
 
         HttpSession session = request.getSession(true);
         utente = (Utente) session.getAttribute("utente");
-        idUtente = utente.getIdUtente();
 
-        //response.sendRedirect(request.getContextPath() + "/paginaUtente.jsp");
-        // TODO: ottenere lista prenotazioni dell'utente dal db e mostrarle nella jsp
-        try {
-            prenotazioni = manager.getPrenotazioniUtente(idUtente);
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
+        // se l'utente è loggato come utente normale 
+        if (utente != null && utente.getIdRuolo() == 2) {
+
+            idUtente = utente.getIdUtente();
+
+            //response.sendRedirect(request.getContextPath() + "/paginaUtente.jsp");
+            try {
+                prenotazioni = manager.getPrenotazioniUtente(idUtente);
+            } catch (SQLException ex) {
+                throw new ServletException(ex);
+            }
+
+            prenotazioniUtente = new ArrayList<PrenotazioneUtente>();
+            for (Prenotazione p : prenotazioni) {
+                PrenotazioneUtente pu = new PrenotazioneUtente();
+                pu.setTitoloFilm(getTitoloFilm(p.getIdSpettacolo()));
+                pu.setSala(getSalaSpettacolo(p.getIdSpettacolo()));
+                pu.setIdPosto(p.getIdPosto());
+                pu.setDataOra(getDataOraSpettacolo(p.getIdSpettacolo()));
+                pu.setPrezzo(manager.getPrezzoById(p.getIdPrezzo()).getPrezzo());
+
+                prenotazioniUtente.add(pu);
+            }
+
+            request.setAttribute("prenotazioniUtente", prenotazioniUtente);
+
+            RequestDispatcher rd = request.getRequestDispatcher("/paginaUtente.jsp");
+            rd.forward(request, response);
+        } else {
+            //se l'utente non è loggato come utente normale redirect alla home
+            response.sendRedirect(request.getContextPath() + "/Home");
         }
-
-        prenotazioniUtente = new ArrayList<PrenotazioneUtente>();
-        for (Prenotazione p : prenotazioni) {
-            PrenotazioneUtente pu = new PrenotazioneUtente();
-            pu.setTitoloFilm(getTitoloFilm(p.getIdSpettacolo()));
-            pu.setSala(getSalaSpettacolo(p.getIdSpettacolo()));
-            pu.setIdPosto(p.getIdPosto());
-            pu.setDataOra(getDataOraSpettacolo(p.getIdSpettacolo()));
-            pu.setPrezzo(manager.getPrezzoById(p.getIdPrezzo()).getPrezzo());
-
-            prenotazioniUtente.add(pu);
-        }
-
-        request.setAttribute("prenotazioniUtente", prenotazioniUtente);
-
-        RequestDispatcher rd = request.getRequestDispatcher("/paginaUtente.jsp");
-        rd.forward(request, response);
     }
 
 // TO-DO: aggiungere commenti alle funzioni    
