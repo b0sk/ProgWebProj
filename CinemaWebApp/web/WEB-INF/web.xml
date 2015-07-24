@@ -32,6 +32,10 @@
         <servlet-name>AmministrazioneServlet</servlet-name>
         <servlet-class>servlet.AmministrazioneServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PostiSpettacoloServlet</servlet-name>
+        <servlet-class>servlet.PostiSpettacoloServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -59,6 +63,10 @@
     <servlet-mapping>
         <servlet-name>AmministrazioneServlet</servlet-name>
         <url-pattern>/AmministrazioneServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PostiSpettacoloServlet</servlet-name>
+        <url-pattern>/PostiSpettacoloServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

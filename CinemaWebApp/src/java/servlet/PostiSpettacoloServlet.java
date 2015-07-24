@@ -1,12 +1,10 @@
 package servlet;
 
-import db.DBManager;
-import db.Film;
-import db.Genere;
-import db.Spettacolo;
+import db   .DBManager;
+import db.Posto;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Patrik
  */
-public class DettagliServlet extends HttpServlet {
+public class PostiSpettacoloServlet extends HttpServlet {
 
     private DBManager manager;
 
@@ -39,38 +37,44 @@ public class DettagliServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String idFilm;
-        Film film = new Film();
-        Genere genere = new Genere();
-        List<Spettacolo> spettacoli;
+        int idSpettacolo;
 
-        if (request.getParameter("idFilm") != null) {
-            idFilm = request.getParameter("idFilm");
+        if (request.getParameter("idSpettacolo") != null) {
+            List<Posto> posti;
+            List<Posto> postiPrenotati;
+
+            idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
 
             try {
-                film = manager.getFilmById(idFilm);
-                spettacoli = manager.getSpettacoli(idFilm);
-                genere = manager.getGenereById(film.getIdGenere());
+                posti = manager.getPostiSpettacolo(idSpettacolo);
+                postiPrenotati = manager.getPostiPrenotatiSpettacolo(idSpettacolo);
+                
+                
+                if (posti != null) {
+                    request.setAttribute("posti", posti);
+                    request.setAttribute("postiPrenotati", postiPrenotati);
 
-                request.setAttribute("film", film);
-                request.setAttribute("spettacoli", spettacoli);
-                request.setAttribute("genere", genere);
+                    RequestDispatcher rd = request.getRequestDispatcher("/postiSpettacolo.jsp");
+                    rd.forward(request, response);
+                } else {
+                    // Lo spettacolo non esiste: errore
+                    request.setAttribute("errorMessage", "Lo spettacolo non esiste");
+                    RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+                    rd.forward(request, response);
+                }
 
-                RequestDispatcher rd = request.getRequestDispatcher("/dettagli.jsp");
-                rd.forward(request, response);
             } catch (Exception ex) {
-                // MOSTRA PAGINA DI ERRORE con messaggi
                 request.setAttribute("exception", ex.toString());
+                request.setAttribute("errorMessage", "Lo spettacolo non esiste");
                 RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
                 rd.forward(request, response);
-
-                //throw new ServletException(ex);
             }
 
         } else {
-            // redirect a pagina di errore
+            // redirecto a home o a errore
             response.sendRedirect(request.getContextPath() + "/errore.jsp");
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
