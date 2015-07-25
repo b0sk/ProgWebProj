@@ -1,7 +1,7 @@
-Fri Jul 03 14:10:14 CEST 2015 : Server di rete Apache Derby: 10.10.1.3 - (1557168) avviato e pronto ad accettare connessioni sulla porta 1527
+Fri Jul 24 10:45:31 CEST 2015 : Server di rete Apache Derby: 10.10.1.3 - (1557168) avviato e pronto ad accettare connessioni sulla porta 1527
 ----------------------------------------------------------------
-Fri Jul 03 14:10:14 CEST 2015:
-Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): istanza a816c00e-014e-53d3-0178-ffffe867ff9c
+Fri Jul 24 10:46:18 CEST 2015:
+Avvio della versione di Derby The Apache Software Foundation - Apache Derby - 10.10.1.3 - (1557168): istanza a816c00e-014e-bf3d-1ea0-ffffe867ff9c
 sulla directory di database C:\Users\Patrik\Documents\NetBeansProjects\ProgWebProj\db\.netbeans-derby\CinemaWebApp con caricatore classi sun.misc.Launcher$AppClassLoader@144bcfa 
 Caricato da file:/C:/Program%20Files%20(x86)/Java/jdk1.8.0_25/db/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -12,3 +12,54 @@ os.arch=x86
 os.version=6.1
 derby.system.home=C:\Users\Patrik\Documents\NetBeansProjects\ProgWebProj\db\.netbeans-derby
 Programma di caricamento classe database avviato - derby.database.classpath=''
+Fri Jul 24 10:54:17 CEST 2015 Thread[DRDAConnThread_4,5,main] Cleanup action starting
+java.sql.SQLException: Database 'db' non trovato.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
+	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
+	at org.apache.derby.jdbc.EmbeddedDriver.connect(Unknown Source)
+	at org.apache.derby.impl.drda.Database.makeConnection(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.getConnFromDatabaseName(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.verifyUserIdPassword(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.parseSECCHK(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.parseDRDAConnection(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.processCommands(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.run(Unknown Source)
+Caused by: java.sql.SQLException: Database 'db' non trovato.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
+	... 19 more
+============= begin nested exception, level (1) ===========
+java.sql.SQLException: Database 'db' non trovato.
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
+	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.newSQLException(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.handleDBNotFound(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection.<init>(Unknown Source)
+	at org.apache.derby.impl.jdbc.EmbedConnection40.<init>(Unknown Source)
+	at org.apache.derby.jdbc.Driver40.getNewEmbedConnection(Unknown Source)
+	at org.apache.derby.jdbc.InternalDriver.connect(Unknown Source)
+	at org.apache.derby.jdbc.Driver20.connect(Unknown Source)
+	at org.apache.derby.jdbc.EmbeddedDriver.connect(Unknown Source)
+	at org.apache.derby.impl.drda.Database.makeConnection(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.getConnFromDatabaseName(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.verifyUserIdPassword(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.parseSECCHK(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.parseDRDAConnection(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.processCommands(Unknown Source)
+	at org.apache.derby.impl.drda.DRDAConnThread.run(Unknown Source)
+============= end nested exception, level (1) ===========
+Cleanup action completed
+Fri Jul 24 10:54:17 CEST 2015 Thread[DRDAConnThread_4,5,main] (DATABASE = db), (DRDAID = {3}), Database 'db' non trovato.
