@@ -77,4 +77,7 @@
         <param-name>dburl</param-name>
         <param-value>jdbc:derby://localhost:1527/CinemaWebApp</param-value>
     </context-param>
+    <welcome-file-list>
+        <welcome-file>Home</welcome-file>
+    </welcome-file-list>
 </web-app>
