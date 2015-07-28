@@ -1,6 +1,6 @@
 package servlet;
 
-import db   .DBManager;
+import db.DBManager;
 import db.Posto;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,15 +42,22 @@ public class PostiSpettacoloServlet extends HttpServlet {
         if (request.getParameter("idSpettacolo") != null) {
             List<Posto> posti;
             List<Posto> postiPrenotati;
+            int righeSala;
+            int colonneSala;
 
             idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
 
             try {
                 posti = manager.getPostiSpettacolo(idSpettacolo);
                 postiPrenotati = manager.getPostiPrenotatiSpettacolo(idSpettacolo);
-                
-                
+
                 if (posti != null) {
+                    righeSala = manager.getNRigheSala(posti.get(1).getIdSala());
+                    colonneSala = manager.getNColonneSala(posti.get(1).getIdSala());
+                    
+                    request.setAttribute("nRighe", righeSala);
+                    request.setAttribute("nColonne", colonneSala);
+
                     request.setAttribute("posti", posti);
                     request.setAttribute("postiPrenotati", postiPrenotati);
 

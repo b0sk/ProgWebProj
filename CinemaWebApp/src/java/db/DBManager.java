@@ -553,6 +553,74 @@ public class DBManager implements Serializable {
         return posti;
     }
 
+    /**
+     * Restituisce il numero di righe di una sala
+     *
+     * @param idSala l'ID della sala
+     * @return un intero che rappresenta il numero di righe, oppure 0 se non ci
+     * sono sala con l'id specificato specificato
+     * @throws SQLException
+     */
+    public int getNRigheSala(int idSala) throws SQLException {
+
+        PreparedStatement stm
+                = con.prepareStatement("SELECT max(RIGA) as nRighe "
+                                        + "FROM POSTO "
+                                        + "WHERE ID_SALA = ?");
+        try {
+            stm.setString(1, Integer.toString(idSala));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    int nRighe = rs.getInt("nRighe");
+                    return nRighe;
+                } else {
+                    return 0;
+                }
+            } catch (SQLException e) {
+                return 0;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+
+    /**
+     * Restituisce il numero di righe di una sala
+     *
+     * @param idSala l'ID della sala
+     * @return un intero che rappresenta il numero di righe, oppure 0 se non ci
+     * sono sala con l'id specificato specificato
+     * @throws SQLException
+     */
+    public int getNColonneSala(int idSala) throws SQLException {
+
+        PreparedStatement stm
+                = con.prepareStatement("SELECT max(COLONNA) as nColonne "
+                                        + "FROM POSTO "
+                                        + "WHERE ID_SALA = ?");
+        try {
+            stm.setString(1, Integer.toString(idSala));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    int nColonne = rs.getInt("nColonne");
+                    return nColonne;
+                } else {
+                    return 0;
+                }
+            } catch (SQLException e) {
+                return 0;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+    
     /////////////// da correggere //////////////////////////////////////////////
     /**
      * Restituisce l'incasso di un film, in base al suo ID

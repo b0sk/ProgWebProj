@@ -16,6 +16,7 @@
     </head>
     <body>
         <div class="container">
+            <h2>Righe sala: ${requestScope.nRighe} - Colonne sala: ${requestScope.nColonne}</h2>
             <h2>Posti:</h2>
             <c:forEach items="${requestScope.posti}" var="posto">
                 <div class="row" <c:if test='${posto.esiste == false}'>style="color: #ff6666"</c:if>>
