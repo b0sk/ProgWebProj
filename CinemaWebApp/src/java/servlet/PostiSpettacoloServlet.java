@@ -42,6 +42,7 @@ public class PostiSpettacoloServlet extends HttpServlet {
         if (request.getParameter("idSpettacolo") != null) {
             List<Posto> posti;
             List<Posto> postiPrenotati;
+            List<String> mappaPosti;
             int righeSala;
             int colonneSala;
 
@@ -54,6 +55,9 @@ public class PostiSpettacoloServlet extends HttpServlet {
                 if (posti != null) {
                     righeSala = manager.getNRigheSala(posti.get(1).getIdSala());
                     colonneSala = manager.getNColonneSala(posti.get(1).getIdSala());
+                    
+                    mappaPosti = generaMappaPosti(righeSala, colonneSala, posti);
+                    System.out.println(mappaPosti);
                     
                     request.setAttribute("nRighe", righeSala);
                     request.setAttribute("nColonne", colonneSala);
@@ -82,6 +86,24 @@ public class PostiSpettacoloServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/errore.jsp");
         }
 
+    }
+    
+    List<String> generaMappaPosti(int nRighe, int nColonne, List<Posto> Posti){
+        List<String> mappaPosti = new ArrayList<String>();
+        
+        for(int i=0; i < nRighe; i++){
+            String riga = "";
+            for(int j=0; j < nColonne; j++){
+                if(Posti.get(Integer.parseInt(Integer.toString(i) + Integer.toString(j))).getEsiste() == true){
+                    riga += "p";
+                } else {
+                    riga += "x";
+                }
+            }
+            mappaPosti.add(riga);
+        }
+        
+        return mappaPosti;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
