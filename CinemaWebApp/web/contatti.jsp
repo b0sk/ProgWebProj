@@ -35,8 +35,8 @@
             <br>
             <br>
             <h3>Seguici su:</h3>
-            <p><a href="home.jsp"><img border="0" alt="W3Schools" src="img/fb-logo.png" width="200" height="200"></a>
-               <a href="home.jsp"><img border="0" alt="W3Schools" src="img/t-logo.png" width="200" height="200"></a>
+            <p><a href="http://www.facebook.com"><img border="0" alt="W3Schools" src="img/fb-logo.png" width="200" height="200"></a>
+               <a href="http://www.twitter.com"><img border="0" alt="W3Schools" src="img/t-logo.png" width="200" height="200"></a>
             </p>
             <br>
             <br>
