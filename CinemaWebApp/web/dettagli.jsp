@@ -45,7 +45,7 @@
                         <p>Sala ${spettacolo.idSala}</p>
                     </div>
                     <div class="col-xs-1">
-                        <a href="">Prenota!</a>
+                        <a href="PostiSpettacoloServlet?idSpettacolo=${spettacolo.idSpettacolo}">Prenota!</a>
                     </div>
                 </div>
             </c:forEach>
