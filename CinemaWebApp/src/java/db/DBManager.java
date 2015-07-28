@@ -652,11 +652,11 @@ public class DBManager implements Serializable {
         try {
             stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();
-            System.out.println("CIAOO");
+//            System.out.println("CIAOO");
             try {
                 if (rs.next()) {
                     double ris = rs.getDouble("incasso");
-                    System.out.println(ris);
+//                    System.out.println(ris);
                     return ris;
                 } else {
                     return 0.0;
