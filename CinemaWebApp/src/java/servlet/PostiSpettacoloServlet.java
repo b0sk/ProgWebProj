@@ -55,13 +55,15 @@ public class PostiSpettacoloServlet extends HttpServlet {
                 if (posti != null) {
                     righeSala = manager.getNRigheSala(posti.get(1).getIdSala());
                     colonneSala = manager.getNColonneSala(posti.get(1).getIdSala());
-                    
-                    mappaPosti = generaMappaPosti(righeSala, colonneSala, posti);
+
+                    mappaPosti = generaMappaPosti(righeSala, colonneSala, posti, postiPrenotati);
                     System.out.println(mappaPosti);
-                    
+
                     request.setAttribute("nRighe", righeSala);
                     request.setAttribute("nColonne", colonneSala);
 
+                    request.setAttribute("mappaPosti", mappaPosti);
+                    
                     request.setAttribute("posti", posti);
                     request.setAttribute("postiPrenotati", postiPrenotati);
 
@@ -87,14 +89,27 @@ public class PostiSpettacoloServlet extends HttpServlet {
         }
 
     }
-    
-    List<String> generaMappaPosti(int nRighe, int nColonne, List<Posto> Posti){
+
+    /**
+     * Restituisce un array di stringhe che rappresenta la mappa dei posti, prendendo
+     * in input il numero di righe della sala, il numero di colonne della sala,
+     * la lista dei posti e la lista dei posti occupati
+     * @param nRighe il numero di righe della sala
+     * @param nColonne il numero di colonne della sala
+     * @param Posti la lista di tutti i posti dello spettacolo
+     * @param postiPrenotati la lista dei posti già prenotati per lo spettacolo
+     * @return ArrayListi di stringhe che rappresenta la mappa della sala
+     */
+    private List<String> generaMappaPosti(int nRighe, int nColonne, List<Posto> Posti, List<Posto> postiPrenotati) {
         List<String> mappaPosti = new ArrayList<String>();
-        
-        for(int i=0; i < nRighe; i++){
+
+        for (int i = 0; i < nRighe; i++) {
             String riga = "";
-            for(int j=0; j < nColonne; j++){
-                if(Posti.get(Integer.parseInt(Integer.toString(i) + Integer.toString(j))).getEsiste() == true){
+            for (int j = 0; j < nColonne; j++) {
+                Posto p = Posti.get(Integer.parseInt(Integer.toString(i) + Integer.toString(j)));
+                if (isPrenotato(p.getIdPosto(), postiPrenotati)) {
+                    riga += "o";
+                } else if (p.getEsiste() == true) {
                     riga += "p";
                 } else {
                     riga += "x";
@@ -102,8 +117,19 @@ public class PostiSpettacoloServlet extends HttpServlet {
             }
             mappaPosti.add(riga);
         }
-        
+
         return mappaPosti;
+    }
+
+    /* Controlla se il posto è già stato prenotato */
+    private Boolean isPrenotato(int idPosto, List<Posto> occupati) {
+        for (Posto p : occupati) {
+            if (p.getIdPosto() == idPosto) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
