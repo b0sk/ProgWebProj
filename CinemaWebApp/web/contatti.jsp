@@ -27,7 +27,7 @@
             <br>
             <p>3883 Howard Hughes Pkwy, Las Vegas, NV 89169</p>
             <br>
-            <p><a href="mailto:emailaddress">cinema@email.com</a></p>
+            <p><a href="mailto:emailaddress">cinemawebapp@gmail.com</a></p>
             <br>
             <br>
             <h3>Orari:</h3>
