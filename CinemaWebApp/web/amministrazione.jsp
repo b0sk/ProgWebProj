@@ -17,13 +17,13 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-8">
+                <div class="col-sm-10 col-xs-7">
                     <h3>${utente.email}</h3>
                     <h4>Credito: ${utente.credito} €</h4>
 
                 </div>
 
-                <div class="col-xs-4">
+                <div class="col-sm-2 col-xs-2 pull-rigt">
                     <h3><a href="Logout">Logout</a></h3>
                 </div>
 
@@ -31,10 +31,10 @@
 
             <br>
             <div class="row">
-                <div class="col-md-6 col-xs-10">
+                <div class="col-md-6 col-xs-9">
                     <h3>Incassi Film:</h3>
                     
-                    <table class="table table-striped table-hover table-bordered">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>Film</th>
@@ -48,8 +48,8 @@
                             </tr-->
                             <c:forEach items="${requestScope.incassiFilm}" var="incassoFilm">                
                                 <tr>
-                                    <td>${incassoFilm.key}</td>
-                                    <td>${incassoFilm.value} €</td>
+                                    <td class="col-md-3">${incassoFilm.key}</td>
+                                    <td class="col-md-2">${incassoFilm.value} €</td>
                                 </tr>
                             </c:forEach>
 
