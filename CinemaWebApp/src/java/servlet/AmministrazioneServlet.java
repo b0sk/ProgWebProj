@@ -6,10 +6,14 @@
 package servlet;
 
 import db.DBManager;
+import db.Film;
 import db.Utente;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
@@ -55,9 +59,18 @@ public class AmministrazioneServlet extends HttpServlet {
 
             //response.sendRedirect(request.getContextPath() + "/amministrazione.jsp");
             // TODO: ottenere liste dal db e mostrarle nella jsp
-            double incasso = manager.getIncassoFilm(1);
+            
+            // ottieni la lista di tutti i film
+            List<Film> films = manager.getFilms();
+            // hash map che contiene titolo(String) e prezzo(Double)
+            Map<String, Double> incassiFilm = new HashMap<String, Double>();
+            // per ogni film salva titole e prezzo in incassi film
+            for(Film film : films){
+                incassiFilm.put(film.getTitolo(), manager.getIncassoFilm(film.getIdFilm()));
+            }
+            //double incasso = manager.getIncassoFilm(1);
 
-            request.setAttribute("incasso", incasso);
+            request.setAttribute("incassiFilm", incassiFilm);
             
             RequestDispatcher rd = request.getRequestDispatcher("/amministrazione.jsp");
             rd.forward(request, response);

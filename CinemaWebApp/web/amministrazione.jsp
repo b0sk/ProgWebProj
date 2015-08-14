@@ -15,7 +15,7 @@
 
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-8">
                     <h3>${utente.email}</h3>
@@ -23,35 +23,44 @@
 
                 </div>
 
-                <div class="col-xs-2 col-xs-offset-2">
+                <div class="col-xs-4">
                     <h3><a href="Logout">Logout</a></h3>
                 </div>
 
             </div>
 
-        <br>
+            <br>
+            <div class="row">
+                <div class="col-md-6 col-xs-10">
+                    <h3>Incassi Film:</h3>
                     
-        <h3>Incassi Film:</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Film</th>
-                    <th>Incasso</th>
-                </tr>    
-            </thead>
-            <tbody>
-                <!--c:forEach items="${requestScope.incassiFilm}" var="incassoFilm"-->                
-                <tr>
-                    <td>forrest gump</td>
-                    <td>${requestScope.incasso} €</td>
-                </tr>
-                <!--/c:forEach-->
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Film</th>
+                                <th>Incasso</th>
+                            </tr>    
+                        </thead>
+                        <tbody>
+                            <!--tr>
+                                <td>forrest gump</td>
+                                <td>${requestScope.incasso} €</td>
+                            </tr-->
+                            <c:forEach items="${requestScope.incassiFilm}" var="incassoFilm">                
+                                <tr>
+                                    <td>${incassoFilm.key}</td>
+                                    <td>${incassoFilm.value} €</td>
+                                </tr>
+                            </c:forEach>
 
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
+                            
+                </div>
+            </div>
 
 
-    </div>
+        </div>
 
-</body>
+    </body>
 </html>
