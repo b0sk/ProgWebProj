@@ -18,15 +18,15 @@
 
     </head>
     <body>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-8">
+                <div class="col-sm-10 col-xs-7">
                     <h3>${utente.email}</h3>
                     <h4>Credito: ${utente.credito} €</h4>
 
                 </div>
 
-                <div class="col-xs-2 col-xs-offset-2">
+                <div class="col-sm-2 col-xs-2 pull-rigt">
                     <h3><a href="Logout">Logout</a></h3>
                 </div>
             </div>
@@ -34,7 +34,7 @@
             <br>
             
             <h3>Lista prenotazioni:</h3>
-            <table class="table table-striped">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Film</th>
