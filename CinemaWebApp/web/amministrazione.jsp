@@ -30,10 +30,11 @@
             </div>
 
             <br>
+
             <div class="row">
                 <div class="col-md-6 col-xs-9">
                     <h3>Incassi Film:</h3>
-                    
+
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -55,10 +56,38 @@
 
                         </tbody>
                     </table>
-                            
+
                 </div>
             </div>
 
+            <br>
+
+            <div class="row">
+                <div class="col-md-6 col-xs-9">
+                    <h3>Top Users:</h3>
+
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Email</th>
+                                <th>Incasso generato</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${requestScope.top10Users}" var="topUser" varStatus="myIndex">                
+                                <tr>
+                                    <th class="col-md-1">${myIndex.index + 1}</td>
+                                    <td class="col-md-3">${topUser.key}</td>
+                                    <td class="col-md-2">${topUser.value} €</td>
+                                </tr>
+                            </c:forEach>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
 
         </div>
 

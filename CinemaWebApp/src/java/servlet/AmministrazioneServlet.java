@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -60,6 +61,7 @@ public class AmministrazioneServlet extends HttpServlet {
             //response.sendRedirect(request.getContextPath() + "/amministrazione.jsp");
             // TODO: ottenere liste dal db e mostrarle nella jsp
             
+            // OTTIENI lista degli incassi per ogni film:
             // ottieni la lista di tutti i film
             List<Film> films = manager.getFilms();
             // hash map che contiene titolo(String) e prezzo(Double)
@@ -68,10 +70,16 @@ public class AmministrazioneServlet extends HttpServlet {
             for(Film film : films){
                 incassiFilm.put(film.getTitolo(), manager.getIncassoFilm(film.getIdFilm()));
             }
-            //double incasso = manager.getIncassoFilm(1);
 
-            request.setAttribute("incassiFilm", incassiFilm);
+            // OTTIENI la lista dei top 10 users:
+            Map<String, Double> top10Users = new LinkedHashMap<String, Double>();
+            top10Users = manager.getTop10Users();
             
+            // setta gli attributi da inviare ad amministrazione jsp
+            request.setAttribute("incassiFilm", incassiFilm);
+            request.setAttribute("top10Users", top10Users);
+            
+            // passa i messaggi alla pagina jsp
             RequestDispatcher rd = request.getRequestDispatcher("/amministrazione.jsp");
             rd.forward(request, response);
 

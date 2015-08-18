@@ -7,7 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -558,15 +561,15 @@ public class DBManager implements Serializable {
      *
      * @param idSala l'ID della sala
      * @return un intero che rappresenta il numero di righe, oppure 0 se non ci
-     * sono sala con l'id specificato specificato
+     * sono sala con l'id specificato
      * @throws SQLException
      */
     public int getNRigheSala(int idSala) throws SQLException {
 
         PreparedStatement stm
                 = con.prepareStatement("SELECT max(RIGA) as nRighe "
-                                        + "FROM POSTO "
-                                        + "WHERE ID_SALA = ?");
+                        + "FROM POSTO "
+                        + "WHERE ID_SALA = ?");
         try {
             stm.setString(1, Integer.toString(idSala));
             ResultSet rs = stm.executeQuery();
@@ -588,19 +591,19 @@ public class DBManager implements Serializable {
     }
 
     /**
-     * Restituisce il numero di righe di una sala
+     * Restituisce il numero di colonne di una sala
      *
      * @param idSala l'ID della sala
-     * @return un intero che rappresenta il numero di righe, oppure 0 se non ci
-     * sono sala con l'id specificato specificato
+     * @return un intero che rappresenta il numero di colonne, oppure 0 se non
+     * ci sono sale con l'id specificato
      * @throws SQLException
      */
     public int getNColonneSala(int idSala) throws SQLException {
 
         PreparedStatement stm
                 = con.prepareStatement("SELECT max(COLONNA) as nColonne "
-                                        + "FROM POSTO "
-                                        + "WHERE ID_SALA = ?");
+                        + "FROM POSTO "
+                        + "WHERE ID_SALA = ?");
         try {
             stm.setString(1, Integer.toString(idSala));
             ResultSet rs = stm.executeQuery();
@@ -620,8 +623,7 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
-    /////////////// da correggere //////////////////////////////////////////////
+
     /**
      * Restituisce l'incasso di un film, in base al suo ID
      *
@@ -671,6 +673,44 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Restituisce una lista dei 10 utenti top, con email e incasso generato.
+     * La lista è ordinata in modo decrescente in base all'incasso.
+     * @return Una LinkedHashMap che ha come chiave l'email dell'utente e come valore
+     * l'icasso generato dallo stesso
+     * @throws SQLException
+     */
+    public Map<String, Double> getTop10Users() throws SQLException {
+        Map<String, Double> topUsers = new LinkedHashMap<String, Double>();
+        PreparedStatement stm
+                = con.prepareStatement(
+                        "select PRENOTAZIONE.ID_UTENTE, UTENTE.EMAIL as EMAIL, sum(prezzo) as INCASSO "
+                        + "from PRENOTAZIONE left join PREZZO on PREZZO.ID_PREZZO = PRENOTAZIONE.ID_PREZZO "
+                        + "    left join UTENTE on UTENTE.ID_UTENTE = PRENOTAZIONE.ID_UTENTE "
+                        + "group by PRENOTAZIONE.ID_UTENTE, UTENTE.EMAIL "
+                        + "order by sum(prezzo) DESC");
+        try {
+            stm.setMaxRows(10);
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                while (rs.next()) {
+                    topUsers.put(rs.getString("EMAIL"), rs.getDouble("INCASSO"));
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+
+        } catch (SQLException e) {
+            return null;
+        } finally {
+            stm.close();
+        }
+        
+        return topUsers;
+    }
 
 }
