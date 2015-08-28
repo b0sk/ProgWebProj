@@ -39,13 +39,13 @@ public class DettagliServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String idFilm;
+        int idFilm;
         Film film = new Film();
         Genere genere = new Genere();
         List<Spettacolo> spettacoli;
 
         if (request.getParameter("idFilm") != null) {
-            idFilm = request.getParameter("idFilm");
+            idFilm = Integer.parseInt(request.getParameter("idFilm"));
 
             try {
                 film = manager.getFilmById(idFilm);
