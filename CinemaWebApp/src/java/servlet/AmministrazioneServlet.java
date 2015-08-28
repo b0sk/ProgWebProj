@@ -7,10 +7,14 @@ package servlet;
 
 import db.DBManager;
 import db.Film;
+import db.Prenotazione;
+import db.Prezzo;
+import db.Spettacolo;
 import db.Utente;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,27 +62,64 @@ public class AmministrazioneServlet extends HttpServlet {
         // se l'utente è loggato come utente amministratore va alla pagina amministrazione
         if (utente != null && utente.getIdRuolo() == 1) {
 
+            // Gestisce la cancellazione di una prenotazione
+            if (request.getParameterMap().containsKey("idPrenotazioneCanc")) {
+                Prenotazione prenot = manager.getPrenotazioneById(Integer.parseInt((String)request.getParameter("idPrenotazioneCanc")));
+                if (prenot != null) {
+                    Prezzo prezzo = manager.getPrezzoById(prenot.getIdPrezzo());
+
+                    // cancella la prenotazione
+                    if (manager.deletePrentoazione(prenot.getIdPrenotazione())) {
+                        // se la prenotazione è stata cancellata aggiungi l'80% del prezzo all'utente
+                        manager.addUserCredit(prenot.getIdUtente(), 0.8 * prezzo.getPrezzo());
+                    }
+                }
+
+            }
+
             //response.sendRedirect(request.getContextPath() + "/amministrazione.jsp");
             // TODO: ottenere liste dal db e mostrarle nella jsp
-            
             // OTTIENI lista degli incassi per ogni film:
             // ottieni la lista di tutti i film
             List<Film> films = manager.getFilms();
             // hash map che contiene titolo(String) e prezzo(Double)
             Map<String, Double> incassiFilm = new HashMap<String, Double>();
             // per ogni film salva titole e prezzo in incassi film
-            for(Film film : films){
+            for (Film film : films) {
                 incassiFilm.put(film.getTitolo(), manager.getIncassoFilm(film.getIdFilm()));
             }
 
             // OTTIENI la lista dei top 10 users:
             Map<String, Double> top10Users = new LinkedHashMap<String, Double>();
             top10Users = manager.getTop10Users();
-            
+
+            // OTTIENI la lista delle prenotazioni attive:
+            // ottieni la lista delle prenotazioni attive in questo momento
+            List<Prenotazione> prenotazioniAttive = manager.getPrenotazioniAttive();
+            List<Spettacolo> spettacoliPrenotazAtt = new ArrayList<Spettacolo>();
+            List<Utente> utentiPrenotazAtt = new ArrayList<Utente>();
+            List<Film> filmPrenotazAtt = new ArrayList<Film>();
+            List<Prezzo> prezziPrenotazAtt = new ArrayList<Prezzo>();
+            // ottieni Spettacolo, Utente e Prezzo di ogni Prenotazione attiva
+            for (Prenotazione p : prenotazioniAttive) {
+                Spettacolo spett = new Spettacolo();
+                spett = manager.getSpettacoloById(p.getIdSpettacolo());
+                spettacoliPrenotazAtt.add(spett);
+                utentiPrenotazAtt.add(manager.getUtenteById(p.getIdUtente()));
+                filmPrenotazAtt.add(manager.getFilmById(spett.getIdFilm()));
+                prezziPrenotazAtt.add(manager.getPrezzoById(p.getIdPrezzo()));
+            }
+
             // setta gli attributi da inviare ad amministrazione jsp
             request.setAttribute("incassiFilm", incassiFilm);
             request.setAttribute("top10Users", top10Users);
-            
+
+            request.setAttribute("prenotazioniA", prenotazioniAttive);
+            request.setAttribute("spettacoliPA", spettacoliPrenotazAtt);
+            request.setAttribute("utentiPA", utentiPrenotazAtt);
+            request.setAttribute("filmPA", filmPrenotazAtt);
+            request.setAttribute("prezziPA", prezziPrenotazAtt);
+
             // passa i messaggi alla pagina jsp
             RequestDispatcher rd = request.getRequestDispatcher("/amministrazione.jsp");
             rd.forward(request, response);

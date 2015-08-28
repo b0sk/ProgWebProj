@@ -77,7 +77,7 @@
                         <tbody>
                             <c:forEach items="${requestScope.top10Users}" var="topUser" varStatus="myIndex">                
                                 <tr>
-                                    <th class="col-md-1">${myIndex.index + 1}</td>
+                                    <th class="col-md-1">${myIndex.index + 1}</th>
                                     <td class="col-md-3">${topUser.key}</td>
                                     <td class="col-md-2">${topUser.value} €</td>
                                 </tr>
@@ -89,7 +89,43 @@
                 </div>
             </div>
 
+            <br>
+
+            <div class="row">
+                <div class="col-md-6 col-xs-9">
+                    <h3>Prenotazioni attive:</h3>
+
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Film</th>
+                                <th>Data e ora spettacolo</th>
+                                <th>Posto</th>
+                                <th>Prezzo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${requestScope.prenotazioniA}" var="prenotazione" varStatus="myIndex">                
+                                <tr>
+                                    <td class="col-md-1">${requestScope.utentiPA.get(myIndex.index).getEmail()}</td> <!-- prenotazione.idUtente -->
+                                    <td class="col-md-3">${requestScope.filmPA.get(myIndex.index).getTitolo()}</td> <!-- prenotazione.idUtente -->
+                                    <td class="col-md-3"><fmt:formatDate value="${requestScope.spettacoliPA.get(myIndex.index).getDataOra()}" type="BOTH" dateStyle="LONG" timeStyle="SHORT" /></td> <!-- prenotazione.idSpettacolo -->
+                                    <td class="col-md-1">${prenotazione.idPosto}</td>
+                                    <td class="col-md-2">${requestScope.prezziPA.get(myIndex.index).getPrezzo()} €</td> <!-- prenotazione.idPrezzo -->
+                                    <td class="col-md-2"><a href="AmministrazioneServlet?idPrenotazioneCanc=${prenotazione.idPrenotazione}">Cancella</a></td> <!-- prenotazione.idPrezzo -->
+                                </tr>
+                            </c:forEach>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            
         </div>
 
-    </body>
+    </div>                    
+
+</body>
 </html>

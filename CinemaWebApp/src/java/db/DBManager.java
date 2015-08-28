@@ -85,12 +85,12 @@ public class DBManager implements Serializable {
      * @return Film desiderato, oppure null se non c'è un film con tale ID
      * @throws SQLException
      */
-    public Film getFilmById(String idFilm) throws SQLException {
+    public Film getFilmById(int idFilm) throws SQLException {
         Film film = new Film();
 
         PreparedStatement stm = con.prepareStatement("SELECT * FROM Film WHERE ID_FILM = ?");
         try {
-            stm.setString(1, idFilm);
+            stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();
             try {
                 rs.next();
@@ -152,19 +152,19 @@ public class DBManager implements Serializable {
      * @return una lista di spettacoli, oppure null se non ci sono spettacoli
      * @throws SQLException
      */
-    public List<Spettacolo> getSpettacoli(String idFilm) throws SQLException {
+    public List<Spettacolo> getSpettacoli(int idFilm) throws SQLException {
         List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
 
         PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ?");
         try {
-            stm.setString(1, idFilm);
+            stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();
             try {
                 while (rs.next()) {
                     Spettacolo s = new Spettacolo();
                     s.setIdSala(rs.getInt("ID_SALA"));
                     s.setDataOra(rs.getTimestamp("DATA_ORA"));
-                    s.setIdFilm(Integer.parseInt(idFilm));
+                    s.setIdFilm(idFilm);
                     s.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
 
                     spettacoli.add(s);
@@ -255,6 +255,38 @@ public class DBManager implements Serializable {
     }
 
     /**
+     * Ritorno un utente in base al suo ID
+     *
+     * @param idUtente l'ID dell'utente
+     * @return null se l'utente non esiste, un oggetto User se l'utente esiste
+     */
+    public Utente getUtenteById(int idUtente) throws SQLException {
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE ID_UTENTE = ?");
+        try {
+            stm.setString(1, Integer.toString(idUtente));
+            ResultSet rs = stm.executeQuery();
+
+            try {
+                if (rs.next()) {
+                    Utente user = new Utente();
+                    user.setIdUtente(idUtente);
+                    user.setEmail(rs.getString("EMAIL"));
+                    user.setPassword(rs.getString("PASSWORD"));
+                    user.setIdRuolo(rs.getInt("ID_RUOLO"));
+                    user.setCredito(rs.getDouble("CREDITO"));
+                    return user;
+                } else {
+                    return null;
+                }
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+
+    /**
      * Autentica un utente in base ad un email e ad una password
      *
      * @param email l'email dell'utente
@@ -264,7 +296,7 @@ public class DBManager implements Serializable {
      */
     public Utente authenticateUtente(String email, String password) throws SQLException {
 
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email= ? AND password = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Utente WHERE email = ? AND password = ?");
         try {
             stm.setString(1, email);
             stm.setString(2, password);
@@ -325,7 +357,7 @@ public class DBManager implements Serializable {
     /**
      * Restituisce un oggeto Prezzo in base al suo ID
      *
-     * @param idPrezzp l'ID del prezzo
+     * @param idPrezzo l'ID del prezzo
      * @return un oggetto Prezzo, oppure null se non ci sono prezzi con l'id
      * specificato
      * @throws SQLException
@@ -396,6 +428,144 @@ public class DBManager implements Serializable {
         }
 
         return prenotazioni;
+    }
+
+    /**
+     * Restituisce un oggeto Prenotazione in base al suo ID
+     *
+     * @param idPrenotazione l'ID della prenotazione da restituire
+     * @return un oggetto Prezzo, oppure null se non ci sono prezzi con l'id
+     *
+     * @throws SQLException
+     */
+    public Prenotazione getPrenotazioneById(int idPrenotazione) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Prenotazione WHERE ID_PRENOTAZIONE = ?");
+        try {
+            stm.setString(1, Integer.toString(idPrenotazione));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    Prenotazione p = new Prenotazione();
+                    p.setIdPrenotazione(idPrenotazione);
+                    p.setIdUtente(rs.getInt("ID_UTENTE"));
+                    p.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
+                    p.setIdPrezzo(rs.getInt("ID_PREZZO"));
+                    p.setIdPosto(rs.getInt("ID_POSTO"));
+                    p.setDataOraOperazione(rs.getTimestamp("DATA_ORA_OPERAZIONE"));
+
+                    return p;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
+
+    /**
+     * Aggiunge un certo credito ad un utente specificato
+     *
+     * @param idUtente l'ID dell'utente a cui aggiungere credito
+     * @param credito il credito da aggiungere
+     * @return true se il credito è stato aggiunto, false altrimenti
+     *
+     * @throws SQLException
+     */
+    public boolean addUserCredit(int idUtente, double credito) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("UPDATE Utente SET Credito = Credito + ? WHERE ID_UTENTE = ?");
+        try {
+            stm.setString(1, Double.toString(credito));
+            stm.setString(2, Integer.toString(idUtente));
+
+            int righeAggiornate = stm.executeUpdate();
+            if (righeAggiornate > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            stm.close();
+        }
+    }
+    
+    /**
+     * Aggiunge un certo credito ad un utente specificato
+     *
+     * @param idUtente l'ID dell'utente a cui aggiungere credito
+     * @param credito il credito da aggiungere
+     * @return true se il credito è stato aggiunto, false altrimenti
+     *
+     * @throws SQLException
+     */
+    public boolean deletePrentoazione(int idPrenotazione) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("DELETE FROM Prenotazione WHERE ID_PRENOTAZIONE = ?");
+        try {
+            stm.setString(1, Integer.toString(idPrenotazione));
+
+            int righeAggiornate = stm.executeUpdate();
+            if (righeAggiornate > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            stm.close();
+        }
+    }
+
+    /**
+     * Restituisce una lista di prenotazioni attive in quel moemento, cioe' per
+     * spettacoli che devono ancora iniziare.
+     *
+     * @param idUtente ID dell'utente
+     * @return una lista di prenotazioni, oppure null se non ci sono
+     * prenotazioni
+     * @throws SQLException
+     */
+    public List<Prenotazione> getPrenotazioniAttive() throws SQLException {
+        List<Prenotazione> prenotazioniAttive = new ArrayList<Prenotazione>();
+
+        PreparedStatement stm = con.prepareStatement("SELECT Prenotazione.ID_PRENOTAZIONE, Prenotazione.ID_UTENTE, Prenotazione.ID_SPETTACOLO, Prenotazione.ID_PREZZO, Prenotazione.ID_POSTO, Prenotazione.DATA_ORA_OPERAZIONE "
+                + "FROM Prenotazione LEFT JOIN Spettacolo ON Prenotazione.ID_SPETTACOLO = Spettacolo.ID_SPETTACOLO "
+                + "WHERE Spettacolo.DATA_ORA > CURRENT TIMESTAMP");
+        try {
+            ResultSet rs = stm.executeQuery();
+            try {
+                while (rs.next()) {
+                    Prenotazione p = new Prenotazione();
+                    p.setIdPrenotazione(rs.getInt("ID_PRENOTAZIONE"));
+                    p.setIdUtente(rs.getInt("ID_UTENTE"));
+                    p.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
+                    p.setIdPrezzo(rs.getInt("ID_PREZZO"));
+                    p.setIdPosto(rs.getInt("ID_POSTO"));
+                    p.setDataOraOperazione(rs.getTimestamp("DATA_ORA_OPERAZIONE"));
+
+                    prenotazioniAttive.add(p);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return prenotazioniAttive;
     }
 
     /**
@@ -567,8 +737,8 @@ public class DBManager implements Serializable {
 
         PreparedStatement stm
                 = con.prepareStatement("SELECT max(RIGA) as nRighe "
-                                        + "FROM POSTO "
-                                        + "WHERE ID_SALA = ?");
+                        + "FROM POSTO "
+                        + "WHERE ID_SALA = ?");
         try {
             stm.setString(1, Integer.toString(idSala));
             ResultSet rs = stm.executeQuery();
@@ -674,10 +844,11 @@ public class DBManager implements Serializable {
     }
 
     /**
-     * Restituisce una lista dei 10 utenti top, con email e incasso generato.
-     * La lista è ordinata in modo decrescente in base all'incasso.
-     * @return Una LinkedHashMap che ha come chiave l'email dell'utente e come valore
-     * l'icasso generato dallo stesso
+     * Restituisce una lista dei 10 utenti top, con email e incasso generato. La
+     * lista è ordinata in modo decrescente in base all'incasso.
+     *
+     * @return Una LinkedHashMap che ha come chiave l'email dell'utente e come
+     * valore l'icasso generato dallo stesso
      * @throws SQLException
      */
     public Map<String, Double> getTop10Users() throws SQLException {
@@ -708,7 +879,7 @@ public class DBManager implements Serializable {
         } finally {
             stm.close();
         }
-        
+
         return topUsers;
     }
 
