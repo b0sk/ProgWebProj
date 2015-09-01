@@ -144,7 +144,7 @@
                                     <td class="col-md-4">${requestScope.filmSpettacoliAtt.get(i.index).getTitolo()}</td>
                                     <td class="col-md-3"><fmt:formatDate value="${spettacolo.getDataOra()}" type="BOTH" dateStyle="LONG" timeStyle="SHORT" /></td>
                                     <td class="col-md-2">${requestScope.nPrenotazioniSpettAtt.get(i.index)}</td>
-                                    <td class="col-md-1">${requestScope.incassiSpettacoliAtt.get(i.index)}</td>
+                                    <td class="col-md-1">${requestScope.incassiSpettacoliAtt.get(i.index)} €</td>
                                 </tr>
                             </c:forEach>
 
