@@ -127,7 +127,7 @@
 
             <div class="row">
                 <div class="col-md-6 col-xs-9">
-                    <h3>Spettacoli Attivi:</h3>
+                    <h3>Spettacoli attivi:</h3>
 
                     <table class="table table-striped table-hover">
                         <thead>
