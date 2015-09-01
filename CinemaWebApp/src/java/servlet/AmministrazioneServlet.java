@@ -109,6 +109,22 @@ public class AmministrazioneServlet extends HttpServlet {
                 filmPrenotazAtt.add(manager.getFilmById(spett.getIdFilm()));
                 prezziPrenotazAtt.add(manager.getPrezzoById(p.getIdPrezzo()));
             }
+            
+            // OTTIENI la lista dei posti prenotati e degli incassi per ogni Spettacolo
+            // ottieni la lista degli spettacoli attivi
+            List<Spettacolo> spettacoliAttivi = manager.getSpettacoliAttivi();
+            List<Film> filmSpettacoli = new ArrayList<Film>();
+            List<Integer> numPrenotazioniSpettacoli = new ArrayList<Integer>();
+            List<Integer> incassiSpettacoli = new ArrayList<Integer>();
+            // ottieni il Film, numero di Prenotazioni e incasso per ogni Spettacolo
+            for (Spettacolo s : spettacoliAttivi){
+                Film film = new Film();
+                film = manager.getFilmById(s.getIdFilm());
+                filmSpettacoli.add(film);
+                numPrenotazioniSpettacoli.add(manager.getNPrenotazioniSpettacolo(s.getIdSpettacolo()));
+                incassiSpettacoli.add(manager.getIncassoSpettacolo(s.getIdSpettacolo()));
+            }
+            // ----------------------------------------------------------
 
             // setta gli attributi da inviare ad amministrazione jsp
             request.setAttribute("incassiFilm", incassiFilm);
@@ -119,6 +135,11 @@ public class AmministrazioneServlet extends HttpServlet {
             request.setAttribute("utentiPA", utentiPrenotazAtt);
             request.setAttribute("filmPA", filmPrenotazAtt);
             request.setAttribute("prezziPA", prezziPrenotazAtt);
+            
+            request.setAttribute("spettacoliAtt", spettacoliAttivi);
+            request.setAttribute("filmSpettacoliAtt", filmSpettacoli);
+            request.setAttribute("nPrenotazioniSpettAtt", numPrenotazioniSpettacoli);
+            request.setAttribute("incassiSpettacoliAtt", incassiSpettacoli);
 
             // passa i messaggi alla pagina jsp
             RequestDispatcher rd = request.getRequestDispatcher("/amministrazione.jsp");

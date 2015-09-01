@@ -123,6 +123,37 @@
                 </div>
             </div>
             
+            <br>
+
+            <div class="row">
+                <div class="col-md-6 col-xs-9">
+                    <h3>Spettacoli Attivi:</h3>
+
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Film:</th>
+                                <th>Data e ora:</th>
+                                <th>Numero posti prenotati</th>
+                                <th>Incasso</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach items="${requestScope.spettacoliAtt}" var="spettacolo" varStatus="i">                
+                                <tr>
+                                    <td class="col-md-4">${requestScope.filmSpettacoliAtt.get(i.index).getTitolo()}</td>
+                                    <td class="col-md-3"><fmt:formatDate value="${spettacolo.getDataOra()}" type="BOTH" dateStyle="LONG" timeStyle="SHORT" /></td>
+                                    <td class="col-md-2">${requestScope.nPrenotazioniSpettAtt.get(i.index)}</td>
+                                    <td class="col-md-1">${requestScope.incassiSpettacoliAtt.get(i.index)}</td>
+                                </tr>
+                            </c:forEach>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            
         </div>
 
     </div>                    

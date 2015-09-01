@@ -182,6 +182,106 @@ public class DBManager implements Serializable {
     }
 
     /**
+     * Restituisce una lista di spettacoli attivi in questo momento
+     *
+     * @return una lista di spettacoli, oppure null se non ci sono spettacoli
+     * @throws SQLException
+     */
+    public List<Spettacolo> getSpettacoliAttivi() throws SQLException {
+        List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE DATA_ORA > CURRENT TIMESTAMP");
+        try {
+            ResultSet rs = stm.executeQuery();
+            try {
+                while (rs.next()) {
+                    Spettacolo s = new Spettacolo();
+                    s.setIdSala(rs.getInt("ID_SALA"));
+                    s.setDataOra(rs.getTimestamp("DATA_ORA"));
+                    s.setIdFilm(rs.getInt("ID_FILM"));
+                    s.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
+
+                    spettacoli.add(s);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return spettacoli;
+    }
+
+    /**
+     * Questa funzione ritorna il numero di prenotazioni per un determinato
+     * spettacolo
+     *
+     * @param idSpettacolo ID dello spettacolo
+     * @return il numero di prenotazioni, oppure 0 se non c'è uno spettacolo con
+     * tale ID
+     * @throws SQLException
+     */
+    public int getNPrenotazioniSpettacolo(int idSpettacolo) throws SQLException {
+        int nPrenotaz = 0;
+
+        PreparedStatement stm = con.prepareStatement("select Count(ID_PRENOTAZIONE) as NPrenotazioni "
+                + "from Spettacolo left join Prenotazione on Spettacolo.ID_SPETTACOLO = Prenotazione.ID_SPETTACOLO "
+                + "where Spettacolo.ID_SPETTACOLO = ?");
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+            try {
+                rs.next();
+                nPrenotaz = rs.getInt("NPrenotazioni");
+            } catch (SQLException e) {
+                return 0;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return nPrenotaz;
+    }
+
+    /**
+     * Questa funzione ritorna l'incasso per un determinato spettacolo
+     *
+     * @param idSpettacolo ID dello spettacolo
+     * @return l'incasso, oppure 0 se non c'è uno spettacolo con tale ID
+     * @throws SQLException
+     */
+    public int getIncassoSpettacolo(int idSpettacolo) throws SQLException {
+        int incasso = 0;
+
+        PreparedStatement stm = con.prepareStatement("select Sum(Prezzo.PREZZO) as Incasso "
+                                                    + "from Spettacolo left join Prenotazione on Spettacolo.ID_SPETTACOLO = Prenotazione.ID_SPETTACOLO "
+                                                    + "    left join Prezzo on Prenotazione.ID_PREZZO = Prezzo.ID_PREZZO "
+                                                    + "where Spettacolo.ID_SPETTACOLO = ?");
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+            try {
+                rs.next();
+                incasso = rs.getInt("Incasso");
+            } catch (SQLException e) {
+                return 0;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return incasso;
+
+    }
+
+    /**
      * Registra un nuovo utente
      *
      * @param email l'indirizzo email dell'utente
@@ -497,7 +597,7 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Aggiunge un certo credito ad un utente specificato
      *
