@@ -122,7 +122,7 @@
 
                 </div>
             </div>
-            
+
             <br>
 
             <div class="row">
@@ -153,10 +153,8 @@
 
                 </div>
             </div>
-            
+
         </div>
 
-    </div>                    
-
-</body>
+    </body>
 </html>
