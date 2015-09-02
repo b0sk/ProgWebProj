@@ -5,10 +5,7 @@ import db.Posto;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Patrik
  */
-public class PostiSpettacoloServlet extends HttpServlet {
+public class PostiSpettacoloServletOld extends HttpServlet {
 
     private DBManager manager;
 
@@ -45,7 +42,7 @@ public class PostiSpettacoloServlet extends HttpServlet {
         if (request.getParameter("idSpettacolo") != null) {
             List<Posto> posti;
             List<Posto> postiPrenotati;
-            int[][] mappaPosti;
+            List<String> mappaPosti;
             int righeSala;
             int colonneSala;
 
@@ -54,40 +51,21 @@ public class PostiSpettacoloServlet extends HttpServlet {
             try {
                 posti = manager.getPostiSpettacolo(idSpettacolo);
                 postiPrenotati = manager.getPostiPrenotatiSpettacolo(idSpettacolo);
-                
+
                 if (posti != null) {
                     righeSala = manager.getNRigheSala(posti.get(1).getIdSala());
                     colonneSala = manager.getNColonneSala(posti.get(1).getIdSala());
 
                     mappaPosti = generaMappaPosti(righeSala, colonneSala, posti, postiPrenotati);
-                    for (int i = 0; i < righeSala; i++) {
-                        for (int j = 0; j < colonneSala; j++) {
-                            System.out.print(mappaPosti[i][j]);
-                        }
-                        System.out.println();
-                    }
-                    
-                    Map<Integer, String> hmapPosti = new LinkedHashMap<Integer, String>();
-                    for(Posto p : posti){
-                        if(p.getEsiste() == false){
-                            hmapPosti.put(p.getIdPosto(), "X");
-                        } else if(isPrenotato(p.getIdPosto(), postiPrenotati)){
-                            hmapPosti.put(p.getIdPosto(), "P");
-                        } else {
-                            hmapPosti.put(p.getIdPosto(), "L");
-                        }
-                    }
-                    
-                    request.setAttribute("hmapPosti", hmapPosti);
-                            
-                            
+                    System.out.println(mappaPosti);
+
                     request.setAttribute("nRighe", righeSala);
                     request.setAttribute("nColonne", colonneSala);
 
                     request.setAttribute("mappaPosti", mappaPosti);
                     
-                    //request.setAttribute("posti", posti);
-                    //request.setAttribute("postiPrenotati", postiPrenotati);
+                    request.setAttribute("posti", posti);
+                    request.setAttribute("postiPrenotati", postiPrenotati);
 
                     RequestDispatcher rd = request.getRequestDispatcher("/postiSpettacolo.jsp");
                     rd.forward(request, response);
@@ -100,7 +78,7 @@ public class PostiSpettacoloServlet extends HttpServlet {
 
             } catch (Exception ex) {
                 request.setAttribute("exception", ex.toString());
-                request.setAttribute("errorMessage", "--"); // Lo spettacolo non esiste (?)
+                request.setAttribute("errorMessage", "Lo spettacolo non esiste");
                 RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
                 rd.forward(request, response);
             }
@@ -122,22 +100,22 @@ public class PostiSpettacoloServlet extends HttpServlet {
      * @param postiPrenotati la lista dei posti già prenotati per lo spettacolo
      * @return ArrayListi di stringhe che rappresenta la mappa della sala
      */
-    private int[][] generaMappaPosti(int nRighe, int nColonne, List<Posto> Posti, List<Posto> postiPrenotati) {
-        int [][] mappaPosti = new int [nRighe][nColonne];
+    private List<String> generaMappaPosti(int nRighe, int nColonne, List<Posto> Posti, List<Posto> postiPrenotati) {
+        List<String> mappaPosti = new ArrayList<String>();
 
         for (int i = 0; i < nRighe; i++) {
-            //String riga = "";
+            String riga = "";
             for (int j = 0; j < nColonne; j++) {
                 Posto p = Posti.get(Integer.parseInt(Integer.toString(i) + Integer.toString(j)));
-                /*if (isPrenotato(p.getIdPosto(), postiPrenotati)) {
-                    mappaPosti [i][j] = 2;
+                if (isPrenotato(p.getIdPosto(), postiPrenotati)) {
+                    riga += "o";
                 } else if (p.getEsiste() == true) {
-                    mappaPosti [i][j] = 1;
+                    riga += "p";
                 } else {
-                    mappaPosti [i][j] = 0;
-                }*/
-                mappaPosti [i][j] = p.getIdPosto();
+                    riga += "x";
+                }
             }
+            mappaPosti.add(riga);
         }
 
         return mappaPosti;
