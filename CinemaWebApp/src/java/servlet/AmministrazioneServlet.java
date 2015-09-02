@@ -124,8 +124,8 @@ public class AmministrazioneServlet extends HttpServlet {
                 numPrenotazioniSpettacoli.add(manager.getNPrenotazioniSpettacolo(s.getIdSpettacolo()));
                 incassiSpettacoli.add(manager.getIncassoSpettacolo(s.getIdSpettacolo()));
             }
-            // ----------------------------------------------------------
-
+            
+            
             // setta gli attributi da inviare ad amministrazione jsp
             request.setAttribute("incassiFilm", incassiFilm);
             request.setAttribute("top10Users", top10Users);
