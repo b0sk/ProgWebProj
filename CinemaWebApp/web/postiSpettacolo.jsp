@@ -21,10 +21,10 @@
                 border: 1px solid #525252;
                 border-radius: 3px;
                 display: inline-block;
-                width: 100%;
+                width: 75%;
                 height: 100%;
                 min-height: 30px;
-                min-width: 20px;
+                /*min-width: 20px;*/
             }
             .posto-l {
                 background-color: #00DB42;
@@ -47,7 +47,26 @@
             .posto-selected:hover {
                 cursor: pointer;
             }
-            
+
+            .posto-l-ex {
+                padding: 5px;
+                min-height: 30px;
+                min-width: 30px;
+                background-color: #00DB42;
+            }
+            .posto-p-ex {
+                min-height: 30px;
+                min-width: 30px;
+                background-color: #FF3300;
+            }
+            .posto-selected-ex {
+                min-height: 30px;
+                min-width: 30px;
+                background-color: #009DFF;
+                opacity: 0.5;
+            }
+
+
             li.li-posto {
                 padding: 5px;
                 list-style-type: none;
@@ -63,45 +82,46 @@
                 var id = $(this).attr("id");
 
                 var postoLI = $("<li></li>").addClass('li-posto').attr("id", "p" + id);
-                    postoLI.append('<input type="hidden" name="id-posto" value="' + id + '" />');
+                postoLI.append('<input type="hidden" name="id-posto" value="' + id + '" />');
 
-                        var contentRow = $("<div></div>").addClass('row');
-                            contentRow.append('<div class="col-sm-3"><p>Posto ' + id + '</p></div>');
-                            var selectDiv = $("<div></div>").addClass("col-sm-9");
-                                var select = $("<select></select>").addClass("form-control").attr("name", "tipo-biglietto");
-                                    select.append(
-                                        <c:forEach var="prezzo" items="${requestScope.prezzi}">
-                                            '<option' <c:if test="${prezzo.tipo == 'normale'}">+' selected'</c:if> +' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>'+
-                                        </c:forEach>
-                                            '');
-                                selectDiv.append(select);
-                            contentRow.append(selectDiv);
+                var contentRow = $("<div></div>").addClass('row');
+                contentRow.append('<div class="col-sm-3"><p>Posto ' + id + '</p></div>');
+                var selectDiv = $("<div></div>").addClass("col-sm-9");
+                var select = $("<select></select>").addClass("form-control").attr("name", "tipo-biglietto");
+                select.append(
+            <c:forEach var="prezzo" items="${requestScope.prezzi}">
+                '<option' <c:if test="${prezzo.tipo == 'normale'}"> + ' selected'</c:if> + ' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>' +
+            </c:forEach>
+                ''
+                        );
+                        selectDiv.append(select);
+                contentRow.append(selectDiv);
 
-                    postoLI.append(contentRow);
+                postoLI.append(contentRow);
                 $(".posti-selezionati").append(postoLI);
-                
+
                 //console.log("asd");
-                }).on('click', '.posto-selected', function () {
-                    $("#p" + $(this).attr("id")).remove();
-                    $(this).addClass("posto-l").removeClass("posto-selected");
-                    //console.log("lol");
-                });
-                /*
-                 $(document).ready(function () {
-                 $(".posto-l").on("click", function () {
-                 //$(this).toggleClass("posto-selected");
-                 $(this).addClass("posto-selected").removeClass("posto-l");
-                 $(".posti-selezionati").append('<li id="p' + $(this).attr("id") + '">Posto: ' + $(this).attr("id") + "</li>");
-                 console.log("asd");
-                 });
-                 $(".posto-selected").on("click", function () {
-                 //$(this).toggleClass("posto-selected");
-                 $("#p"+$(this).attr("id")).remove();
-                 $(this).addClass("posto-l").removeClass("posto-selected");
-                 console.log("lol");
-                 });
-                 });
-                 */
+            }).on('click', '.posto-selected', function () {
+                $("#p" + $(this).attr("id")).remove();
+                $(this).addClass("posto-l").removeClass("posto-selected");
+                //console.log("lol");
+            });
+            /*
+             $(document).ready(function () {
+             $(".posto-l").on("click", function () {
+             //$(this).toggleClass("posto-selected");
+             $(this).addClass("posto-selected").removeClass("posto-l");
+             $(".posti-selezionati").append('<li id="p' + $(this).attr("id") + '">Posto: ' + $(this).attr("id") + "</li>");
+             console.log("asd");
+             });
+             $(".posto-selected").on("click", function () {
+             //$(this).toggleClass("posto-selected");
+             $("#p"+$(this).attr("id")).remove();
+             $(this).addClass("posto-l").removeClass("posto-selected");
+             console.log("lol");
+             });
+             });
+             */
         </script>
 
     </head>
@@ -113,7 +133,7 @@
 
             <div class="row">
                 <!-- Mappa dei posti -->
-                <div class="col-sm-7">
+                <div class="col-sm-7 col-xs-12">
                     <table class="table">
                         <c:forEach var="i" begin="0" end="${requestScope.nRighe - 1}">
                             <tr>
@@ -121,25 +141,36 @@
                                     <td>
                                         <c:if test="${requestScope.hmapPosti.get(requestScope.mappaPosti[i][j]) == 'L'}">
                                             <div class="posto posto-l" id="${requestScope.mappaPosti[i][j]}">${requestScope.mappaPosti[i][j]}</div>
-                                            <!-- button type="button" style="background-color: greenyellow"> <p></p> </button -->
                                         </c:if>
                                         <c:if test="${requestScope.hmapPosti.get(requestScope.mappaPosti[i][j]) == 'P'}">
                                             <div class="posto posto-p" id="${requestScope.mappaPosti[i][j]}">${requestScope.mappaPosti[i][j]}</div>
-                                            <!--button type="button" disabled style="background-color: red"> <p></p> </button-->
                                         </c:if>
                                         <c:if test="${requestScope.hmapPosti.get(requestScope.mappaPosti[i][j]) == 'X'}">
                                             <div class="posto posto-x" id="${requestScope.mappaPosti[i][j]}"></div>
-                                            <!-- button type="button" disabled style="background-color: white"> <p></p> </button -->
                                         </c:if>
                                     </td>
-                                     <!-- ${requestScope.mappaPosti[i][j]}:${requestScope.hmapPosti.get(requestScope.mappaPosti[i][j])} - --> 
                                 </c:forEach>
                             </tr>
                         </c:forEach>
                     </table>
+
+                    <!-- LEGENDA -->
+                    <div class="row">
+                        <div class="col-xs-12"><h3>Legenda</h3></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-2">Posto libero:</div>
+                        <div class="col-xs-1"><div class="posto posto-l-ex"></div></div>
+                        <div class="col-xs-2">Posto occupato:</div>
+                        <div class="col-xs-1"><div class="posto posto-p-ex"></div></div>
+                        <div class="col-xs-2">Posto selezionato:</div>
+                        <div class="col-xs-1"><div class="posto posto-selected-ex"></div></div>
+                    </div>
+
                 </div>
+
                 <!-- Lista dei posti selezionati -->
-                <div class="col-sm-5" style="border: 1px solid black;">
+                <div class="col-sm-5 col-xs-12"  style="border: 1px solid black;">
                     <form method="POST" action="PagamentoServlet?idSpettacolo=${param["idSpettacolo"]}">
                         <ul class="posti-selezionati">
                             <%-- Esempio di li-posto %--%>
@@ -156,7 +187,7 @@
                                     </div>
                                 </div>
                             </li--%>      
-                            
+
                         </ul>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
@@ -164,10 +195,10 @@
                             </div>
                         </div>
                     </form>
-
                 </div>
 
             </div>
+
         </div>
     </body>
 </html>
