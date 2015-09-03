@@ -40,24 +40,54 @@
             .posto-p {
                 background-color: #FF3300;
             }
-            .posto-selected{
+            .posto-selected {
                 background-color: #009DFF;
                 opacity: 0.5;
+            }
+            .posto-selected:hover {
+                cursor: pointer;
+            }
+            
+            li.li-posto {
+                padding: 5px;
+                list-style-type: none;
+            }
+            ul.posti-selezionati {
+                padding: 7px;
             }
         </style>
 
         <script type="text/javascript">
             $(document.body).on('click', '.posto-l', function () {
                 $(this).addClass("posto-selected").removeClass("posto-l");
-                $(".posti-selezionati").append('<li id="p' + $(this).attr("id") + '">Posto: ' + $(this).attr("id") + "</li>");
+                var id = $(this).attr("id");
+
+                var postoLI = $("<li></li>").addClass('li-posto').attr("id", "p" + id);
+                    postoLI.append('<input type="hidden" name="id-posto" value="' + id + '" />');
+
+                        var contentRow = $("<div></div>").addClass('row');
+                            contentRow.append('<div class="col-sm-3"><p>Posto ' + id + '</p></div>');
+                            var selectDiv = $("<div></div>").addClass("col-sm-9");
+                                var select = $("<select></select>").addClass("form-control").attr("name", "tipo-biglietto");
+                                    select.append(
+                                        <c:forEach var="prezzo" items="${requestScope.prezzi}">
+                                            '<option' <c:if test="${prezzo.tipo == 'normale'}">+' selected'</c:if> +' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>'+
+                                        </c:forEach>
+                                            '');
+                                selectDiv.append(select);
+                            contentRow.append(selectDiv);
+
+                    postoLI.append(contentRow);
+                $(".posti-selezionati").append(postoLI);
+                
                 //console.log("asd");
-            }).on('click', '.posto-selected', function () {
-                $("#p" + $(this).attr("id")).remove();
-                $(this).addClass("posto-l").removeClass("posto-selected");
-                //console.log("lol");
-            });
-/*
-            $(document).ready(function () {
+                }).on('click', '.posto-selected', function () {
+                    $("#p" + $(this).attr("id")).remove();
+                    $(this).addClass("posto-l").removeClass("posto-selected");
+                    //console.log("lol");
+                });
+                /*
+                 $(document).ready(function () {
                  $(".posto-l").on("click", function () {
                  //$(this).toggleClass("posto-selected");
                  $(this).addClass("posto-selected").removeClass("posto-l");
@@ -70,8 +100,8 @@
                  $(this).addClass("posto-l").removeClass("posto-selected");
                  console.log("lol");
                  });
-            });
-*/
+                 });
+                 */
         </script>
 
     </head>
@@ -80,9 +110,7 @@
             <h2>Righe sala: ${requestScope.nRighe} - Colonne sala: ${requestScope.nColonne}</h2>
 
             <h2>Posti:</h2>
-            <!-- c:forEach items="${requestScope.asd}" var="postiAsd" varStatus="index" -->
-                <!--p>${postiAsd.key.idPosto} - ${postiAsd.value}</p-->
-            <!-- /c:forEach -->
+
             <div class="row">
                 <!-- Mappa dei posti -->
                 <div class="col-sm-7">
@@ -112,8 +140,23 @@
                 </div>
                 <!-- Lista dei posti selezionati -->
                 <div class="col-sm-5" style="border: 1px solid black;">
-                    <form>
+                    <form method="POST" action="PagamentoServlet?idSpettacolo=${param["idSpettacolo"]}">
                         <ul class="posti-selezionati">
+                            <%-- Esempio di li-posto %--%>
+                            <%--li class="li-posto" id="p0">
+                                <input type="hidden" name="id-posto" value="0" />
+                                <div class="row">
+                                    <div class="col-sm-3"><p>Posto 0</p></div>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="tipo-biglietto">
+                                            <c:forEach var="prezzo" items="${requestScope.prezzi}">
+                                                <option <c:if test="${prezzo.tipo == 'normale'}">selected</c:if> value="${prezzo.idPrezzo}">${prezzo.tipo} ${prezzo.prezzo}€</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li--%>      
+                            
                         </ul>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
