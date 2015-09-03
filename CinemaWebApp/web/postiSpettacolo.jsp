@@ -24,7 +24,7 @@
                 width: 75%;
                 height: 100%;
                 min-height: 30px;
-                /*min-width: 20px;*/
+                min-width: 20px;
             }
             .posto-l {
                 background-color: #00DB42;
@@ -49,19 +49,18 @@
             }
 
             .posto-l-ex {
-                padding: 5px;
-                min-height: 30px;
-                min-width: 30px;
+                min-height: 25px;
+                min-width: 25px;
                 background-color: #00DB42;
             }
             .posto-p-ex {
-                min-height: 30px;
-                min-width: 30px;
+                min-height: 25px;
+                min-width: 25px;
                 background-color: #FF3300;
             }
             .posto-selected-ex {
-                min-height: 30px;
-                min-width: 30px;
+                min-height: 25px;
+                min-width: 25px;
                 background-color: #009DFF;
                 opacity: 0.5;
             }
@@ -77,6 +76,7 @@
         </style>
 
         <script type="text/javascript">
+            // click su un posto libero
             $(document.body).on('click', '.posto-l', function () {
                 $(this).addClass("posto-selected").removeClass("posto-l");
                 var id = $(this).attr("id");
@@ -101,11 +101,19 @@
                 $(".posti-selezionati").append(postoLI);
 
                 //console.log("asd");
-            }).on('click', '.posto-selected', function () {
+            }).on('click', '.posto-selected', function () { // Click su un posto selezionato
                 $("#p" + $(this).attr("id")).remove();
                 $(this).addClass("posto-l").removeClass("posto-selected");
                 //console.log("lol");
             });
+            
+            /*
+            $(document.body).on('change', 'select', function () {
+                    console.log("asd");
+            }        
+            );*/
+
+            
             /*
              $(document).ready(function () {
              $(".posto-l").on("click", function () {
@@ -127,9 +135,9 @@
     </head>
     <body>
         <div class="container">
-            <h2>Righe sala: ${requestScope.nRighe} - Colonne sala: ${requestScope.nColonne}</h2>
+            <%-- <h2>Righe sala: ${requestScope.nRighe} - Colonne sala: ${requestScope.nColonne}</h2> --%>
 
-            <h2>Posti:</h2>
+            <h2>Seleziona i posti:</h2>
 
             <div class="row">
                 <!-- Mappa dei posti -->
@@ -155,18 +163,20 @@
                     </table>
 
                     <!-- LEGENDA -->
-                    <div class="row">
-                        <div class="col-xs-12"><h3>Legenda</h3></div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12"><h3>Legenda</h3></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-2">Posto libero:</div>
+                            <div class="col-xs-1"><div class="posto posto-l-ex"></div></div>
+                            <div class="col-xs-2">Posto occupato:</div>
+                            <div class="col-xs-1"><div class="posto posto-p-ex"></div></div>
+                            <div class="col-xs-2">Posto selezionato:</div>
+                            <div class="col-xs-1"><div class="posto posto-selected-ex"></div></div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-2">Posto libero:</div>
-                        <div class="col-xs-1"><div class="posto posto-l-ex"></div></div>
-                        <div class="col-xs-2">Posto occupato:</div>
-                        <div class="col-xs-1"><div class="posto posto-p-ex"></div></div>
-                        <div class="col-xs-2">Posto selezionato:</div>
-                        <div class="col-xs-1"><div class="posto posto-selected-ex"></div></div>
-                    </div>
-
+                    
                 </div>
 
                 <!-- Lista dei posti selezionati -->
