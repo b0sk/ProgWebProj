@@ -1,7 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%@ page import="servlet.PaginaUtenteServlet" %>
-
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -22,44 +20,45 @@
     <body>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-10 col-xs-7">
-                    <h3>${utente.email}</h3>
-                    <h4>Credito: ${utente.credito} €</h4>
+                <div class="col-sm-4 col-sm-offset-4 col-xs-9 col-xs-offset-1">
+                    <h2>Conferma</h2>
+                    <c:forEach var="elemento" items="${sessionScope.carrello}">
+                        <p>Posto ${elemento.key} - Tipo biglietto: ${elemento.value.tipo} ${elemento.value.prezzo}€ </p>
+                    </c:forEach>
 
-                </div>
+                    <h4>Totale: ${requestScope.prezzoTotale} €</h4>
 
-                <div class="col-sm-2 col-xs-2 pull-rigt">
-                    <h3><a href="Logout">Logout</a></h3>
+                    <form method="POST" action="CheckoutServlet">
+                        <h3>Metodo di pagamento:</h3>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="tipoPagamento" id="optionsRadios1" value="cartaCredito" checked>
+                                Carta di credito
+                            </label>
+
+                            <input type="text" class="form-control" name="nrCarta" placeholder="Numero di carta" pattern="[0-9]{13,16}" title="Formato carta non valido" />
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="tipoPagamento" id="optionsRadios2" value="creditoUtente">
+                                Credito utente (${sessionScope.utente.credito} €)
+                            </label> 
+                        </div>
+                        <input class="btn btn-primary" type="submit" value="Conferma"/>
+                        <a href="CheckoutServlet?annulla=1" class="btn btn-danger" role="button">Annulla</a>
+
+
+                    </form>
+
                 </div>
             </div>
 
-            <br>
-            
-            <h3>Lista prenotazioni:</h3>
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Film</th>
-                        <th>Sala</th>
-                        <th>Posto</th>
-                        <th>Data ora</th>
-                        <th>Prezzo</th>
-                    </tr>    
-                </thead>
-                <tbody>
-                    <c:forEach items="${requestScope.prenotazioniUtente}" var="prenotazioneUtente">                
-                        <tr>
-                            <td>${prenotazioneUtente.titoloFilm}</td>
-                            <td>${prenotazioneUtente.sala}</td>
-                            <td>${prenotazioneUtente.idPosto}</td>
-                            <td><fmt:formatDate value="${prenotazioneUtente.dataOra}" type="BOTH" dateStyle="LONG" timeStyle="SHORT" /></td>
-                            <td>${prenotazioneUtente.prezzo} €</td>
-                        </tr>
-                    </c:forEach>
-
-                </tbody>
-            </table>
         </div>
-
+        <%--
+                <!-- include jQuery -->
+                <script src="js/jQuery/jquery-2.1.4.js"></script>
+                <!-- Latest compiled and minified JavaScript -->
+                <script src="bootstrap/js/bootstrap.min.js"></script>
+        --%>
     </body>
 </html>

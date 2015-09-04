@@ -7,7 +7,9 @@ import db.Utente;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -66,7 +68,9 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         int idSpettacolo;
         String[] strIdPrezzi;
         String[] strIdPosti;
-        List<Prezzo> prezzi;
+        Map<Integer, Prezzo> carrello;
+        //List<Prezzo> prezzi;
+        
         int prezzoTotale = 0;
         //List<Posto> posti;
 
@@ -81,24 +85,32 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
             strIdPrezzi = request.getParameterValues("tipo-biglietto");
             strIdPosti = request.getParameterValues("id-posto");
 
-            prezzi = new ArrayList();
+            //prezzi = new ArrayList();
             //posti = new ArrayList();
+            carrello = new HashMap();
             try {
-                // aggiungi gli oggetti prezzo alla lista dei prezzi
+                // poèpol la hashmap con id del Posto e il prezzo a lui associato
                 for (int i = 0; i < strIdPrezzi.length; i++) {
-                    prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                    //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
                     //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
+                    int idPosto = Integer.parseInt(strIdPosti[i]);
+                    carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                    //calcola il perzzo totale
+                    prezzoTotale += carrello.get(idPosto).getPrezzo();
                 }
 
                 // calcola il prezzo totale
+                /*
                 for (Prezzo p : prezzi) {
                     prezzoTotale += p.getPrezzo();
-                }
+                }*/
 
+                session.setAttribute("carrello", carrello);
+                
                 // setta i parametri della richiesta e passali a postiSpettacolo.jsp
-                request.setAttribute("prezzi", prezzi);
+                //request.setAttribute("prezzi", prezzi);
                 request.setAttribute("prezzoTotale", prezzoTotale);
-                request.setAttribute("strIdPosti", strIdPosti);
+                //request.setAttribute("strIdPosti", strIdPosti);
 
                 RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
                 rd.forward(request, response);
