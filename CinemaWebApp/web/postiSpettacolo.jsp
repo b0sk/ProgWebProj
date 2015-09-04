@@ -2,7 +2,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<c:set var="page" value="postiSpettacolo"/>
+<%--c:set var="page" value="postiSpettacolo"/--%>
+<c:set var="page" value="altro"/>
+
 
 <!DOCTYPE html>
 <html>
@@ -180,7 +182,7 @@
 
                 <!-- Lista dei posti selezionati -->
                 <div class="col-sm-5 col-xs-12"  style="border: 1px solid black;">
-                    <form method="POST" action="PagamentoServlet?idSpettacolo=${param["idSpettacolo"]}">
+                    <form method="POST" action="RiepilogoPrenotazioneServlet?idSpettacolo=${param["idSpettacolo"]}">
                         <ul class="posti-selezionati">
                             <%-- Esempio di li-posto %--%>
                             <%--li class="li-posto" id="p0">
