@@ -15,6 +15,7 @@
 
         <!-- c:set var="film" value="${requestScope.film}" / -->
 
+        <!-- include jQuery -->
         <script src="js/jQuery/jquery-2.1.4.js"></script>
 
         <style>
