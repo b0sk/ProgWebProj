@@ -47,7 +47,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         Map<Integer, Prezzo> carrello;
         //List<Prezzo> prezzi;
 
-        int prezzoTotale = 0;
+        double prezzoTotale = 0;
         //List<Posto> posti;
 
         HttpSession session = request.getSession(true);

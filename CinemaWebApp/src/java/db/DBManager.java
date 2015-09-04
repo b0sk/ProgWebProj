@@ -181,8 +181,8 @@ public class DBManager implements Serializable {
         return spettacoli;
     }
 /**
-     * Restituisce una lista di spettacoli per un determinato film in base al
-     * suo ID
+     * Restituisce una lista di spettacoli  attivi(non ancora iniziati)
+     * per un determinato film in base al suo ID 
      *
      * @param idFilm ID del film
      * @return una lista di spettacoli, oppure null se non ci sono spettacoli
@@ -633,13 +633,43 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-
+    
     /**
      * Aggiunge un certo credito ad un utente specificato
      *
      * @param idUtente l'ID dell'utente a cui aggiungere credito
      * @param credito il credito da aggiungere
      * @return true se il credito è stato aggiunto, false altrimenti
+     *
+     * @throws SQLException
+     */
+    public boolean setUserCredit(int idUtente, double credito) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("UPDATE Utente SET Credito = ? WHERE ID_UTENTE = ?");
+        try {
+            stm.setString(1, Double.toString(credito));
+            stm.setString(2, Integer.toString(idUtente));
+
+            int righeAggiornate = stm.executeUpdate();
+            if (righeAggiornate > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            stm.close();
+        }
+    }
+
+
+    /**
+     * Rimuove una prenotazione
+     *
+     * @param idPrenotazione l'ID della prenotazione de cancellare
+     * @return true se la prenotazione è stata effettuata, false altrimenti
      *
      * @throws SQLException
      */
@@ -859,6 +889,80 @@ public class DBManager implements Serializable {
         }
 
         return posti;
+    }
+    
+    /**
+     * Controlla se un posto è libero per un determinato spettacolo
+     *
+     * @param idPosto l'id del posto
+     * @param idSpettacolo l'id dello spettacolo
+     * @return true se il posto è libero, false altrimenti
+     * @throws SQLException
+     */
+    public boolean isPostoLibero(int idPosto, int idSpettacolo) throws SQLException {
+        boolean retval; // valore di ritorno della funzione
+        int cnt = 0; // numero di entry trovate (dovrebbe sempre essere 0 o 1)
+        PreparedStatement stm = con.prepareStatement("SELECT COUNT(*) AS CNT FROM PRENOTAZIONE WHERE ID_POSTO = ? AND ID_SPETTACOLO = ?");
+        try {
+            stm.setString(1, Integer.toString(idPosto));
+            stm.setString(2, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                cnt = rs.getInt(1);
+            }
+
+            // Se trova un posto prenotato per quel determinato spettacolo
+            if (cnt != 0) {
+                retval = false;
+            } else {
+                // Se NON c'è già una prenotazione ritorna true
+                retval = true;
+            }
+        } finally {
+            stm.close();
+        }
+
+        return retval;
+
+    }
+    
+    /**
+     * Prenota un posto
+     *
+     * @param idUtente l'id dell'utente
+     * @param idSpettacolo l'id dello septtacolo
+     * @param idPrezzo l'id del prezzo
+     * @param idPosto l'id del posto
+     * @return true se il posto viene prenotato correttamente, false altrimenti
+     * @throws SQLException
+     */
+    public boolean prenotaPosto(int idUtente, int idSpettacolo, int idPrezzo, int idPosto) throws SQLException {
+        // Controlla se l'utente è gia registrato con la stessa email
+        boolean retval; // valore di ritorno della funzione
+        int cnt = 0; // numero di entry con la stessa email trovate (dovrebbe sempre essere 0 o 1)
+        PreparedStatement stm = con.prepareStatement("INSERT INTO PRENOTAZIONE (ID_UTENTE, ID_SPETTACOLO, ID_PREZZO, ID_POSTO, DATA_ORA_OPERAZIONE) "
+                                                    + "VALUES (?, ?, ?, ?, CURRENT TIMESTAMP)");
+        try {
+            stm.setString(1, Integer.toString(idUtente));
+            stm.setString(2, Integer.toString(idSpettacolo));
+            stm.setString(3, Integer.toString(idPrezzo));
+            stm.setString(4, Integer.toString(idPosto));
+            cnt = stm.executeUpdate();
+
+            if(cnt>0){
+                retval = true;
+            } else {
+                retval = false;
+            }
+        }catch(Exception ex){
+            retval = false;
+        }finally {
+            stm.close();
+        }
+
+        return retval;
+
     }
 
     /**
