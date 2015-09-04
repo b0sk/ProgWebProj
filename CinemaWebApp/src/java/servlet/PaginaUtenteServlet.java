@@ -8,7 +8,6 @@ import db.Sala;
 import db.Spettacolo;
 import db.Utente;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
