@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -142,12 +143,14 @@ public class CheckoutServlet extends HttpServlet {
                         Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 // Invia email
                 
                 
                 // Redirect a pagina di successo
-
+                request.setAttribute("succes", 1);
+                RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
+                rd.forward(request, response);
             } else {
                 // errore
             }
