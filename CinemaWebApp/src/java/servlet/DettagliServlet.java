@@ -49,7 +49,8 @@ public class DettagliServlet extends HttpServlet {
 
             try {
                 film = manager.getFilmById(idFilm);
-                spettacoli = manager.getSpettacoli(idFilm);
+                //spettacoli = manager.getSpettacoli(idFilm);
+                spettacoli = manager.getSpettacoliAttiviByIdFilm(idFilm);
                 genere = manager.getGenereById(film.getIdGenere());
 
                 request.setAttribute("film", film);

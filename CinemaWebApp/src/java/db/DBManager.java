@@ -155,7 +155,7 @@ public class DBManager implements Serializable {
     public List<Spettacolo> getSpettacoli(int idFilm) throws SQLException {
         List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
 
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ? ");
         try {
             stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();
@@ -180,7 +180,43 @@ public class DBManager implements Serializable {
 
         return spettacoli;
     }
+/**
+     * Restituisce una lista di spettacoli per un determinato film in base al
+     * suo ID
+     *
+     * @param idFilm ID del film
+     * @return una lista di spettacoli, oppure null se non ci sono spettacoli
+     * @throws SQLException
+     */
+    public List<Spettacolo> getSpettacoliAttiviByIdFilm(int idFilm) throws SQLException {
+        List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
 
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ? AND DATA_ORA > CURRENT TIMESTAMP");
+        try {
+            stm.setString(1, Integer.toString(idFilm));
+            ResultSet rs = stm.executeQuery();
+            try {
+                while (rs.next()) {
+                    Spettacolo s = new Spettacolo();
+                    s.setIdSala(rs.getInt("ID_SALA"));
+                    s.setDataOra(rs.getTimestamp("DATA_ORA"));
+                    s.setIdFilm(idFilm);
+                    s.setIdSpettacolo(rs.getInt("ID_SPETTACOLO"));
+
+                    spettacoli.add(s);
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+
+        return spettacoli;
+    }
+    
     /**
      * Restituisce una lista di spettacoli attivi in questo momento
      *
