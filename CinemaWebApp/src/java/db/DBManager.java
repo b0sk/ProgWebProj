@@ -733,6 +733,40 @@ public class DBManager implements Serializable {
 
         return prenotazioniAttive;
     }
+    
+    /**
+     * Restituisce un oggeto Sala in base al suo ID
+     *
+     * @param idSala l'ID della sala
+     * @return un oggetto Sala, oppure null se non ci sono sale con l'id
+     * specificato
+     * @throws SQLException
+     */
+    public Sala getSalaById(int idSala) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Sala WHERE ID_SALA = ?");
+        try {
+            stm.setString(1, Integer.toString(idSala));
+            ResultSet rs = stm.executeQuery();
+            try {
+                if (rs.next()) {
+                    Sala s = new Sala();
+                    s.setIdSala(idSala);
+                    s.setDescrizione(rs.getString("DESCRIZIONE"));
+
+                    return s;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                rs.close();
+            }
+        } finally {
+            stm.close();
+        }
+    }
 
     /**
      * Restituisce un oggeto spettacolo in base al suo ID
@@ -773,24 +807,27 @@ public class DBManager implements Serializable {
     /**
      * Restituisce un oggeto Sala in base al suo ID
      *
-     * @param idSala l'ID della sala
-     * @return un oggetto Sala, oppure null se non ci sono sale con l'id
+     * @param idPosto l'ID del posto
+     * @return un oggetto Posto, oppure null se non ci sono posti con l'id
      * specificato
      * @throws SQLException
      */
-    public Sala getSalaById(int idSala) throws SQLException {
+    public Posto getPostoById(int idPosto) throws SQLException {
 
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM Sala WHERE ID_SALA = ?");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Posto WHERE ID_POSTO = ?");
         try {
-            stm.setString(1, Integer.toString(idSala));
+            stm.setString(1, Integer.toString(idPosto));
             ResultSet rs = stm.executeQuery();
             try {
                 if (rs.next()) {
-                    Sala s = new Sala();
-                    s.setIdSala(idSala);
-                    s.setDescrizione(rs.getString("DESCRIZIONE"));
+                    Posto p = new Posto();
+                    p.setIdPosto(idPosto);
+                    p.setIdSala(rs.getInt("ID_SALA"));
+                    p.setRiga(rs.getInt("RIGA"));
+                    p.setColonna(rs.getInt("COLONNA"));
+                    p.setEsiste(rs.getBoolean("ESISTE"));
 
-                    return s;
+                    return p;
                 } else {
                     return null;
                 }

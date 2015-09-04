@@ -6,13 +6,19 @@
 package servlet;
 
 import db.DBManager;
+import db.Film;
+import db.Posto;
 import db.Prezzo;
+import db.Spettacolo;
 import db.Utente;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +28,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import utils.Biglietto;
+
+// PDF
+//import com.itextpdf.text.Document;
+//import com.itextpdf.text.pdf.PdfWriter;
+//import java.io.FileOutputStream;
 
 public class CheckoutServlet extends HttpServlet {
 
@@ -45,6 +58,7 @@ public class CheckoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
+        response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
     }
 
     /**
@@ -91,17 +105,28 @@ public class CheckoutServlet extends HttpServlet {
             credito = utente.getCredito();
         } else {
             // altrimenti errrore
+            response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
         }
 
+        //se l'untente non ha abbastanza credito
         if (credito < totalePagamento) {
             // errore
+            response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
         } else {
 
+            // contiene una lista di oggetti biglietto per creare il file pdf
+            List<Biglietto> bigliettiPerPDF = new ArrayList();
+
+            // questa variabile indica se la prenotazione è permessa oppure no
+            // (se ad esempio un posto è gia prenotato viene settata a false)
             boolean allowPrenotazione = true;
+
+            // controlla se tutti i posti sono liberi e genera la lista bigliettiPerPDF
             Iterator iter = carrello.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry pair = (Map.Entry) iter.next();
                 int idPosto = (int) pair.getKey();
+                Prezzo prezzo = (Prezzo) pair.getValue();
 
                 try {
                     // se uno dei posti è gia occupato non permette la prenotazione
@@ -111,10 +136,42 @@ public class CheckoutServlet extends HttpServlet {
                 } catch (SQLException ex) {
                     Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
+                ////////////////////////////////////////////////////////////////
+                // genera il biglietto e aggiungilo alla lista
+                Biglietto b = new Biglietto();
+                Posto pst;
+                Spettacolo spett;
+                Film f;
+                Timestamp dataTimestamp;
+                String dataStr;
+                try {
+                    spett = manager.getSpettacoloById(idSpettacolo);
+                    f = manager.getFilmById(spett.getIdFilm());
+                    pst = manager.getPostoById(idPosto);
+
+                    dataTimestamp = spett.getDataOra();
+                    dataStr = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataTimestamp);
+
+                    b.setTitoloFilm(f.getTitolo());
+                    b.setIdPosto(pst.getIdPosto());
+                    b.setRigaPosto(pst.getRiga());
+                    b.setColonnaPosto(pst.getColonna());
+                    b.setPrezzoBiglietto(prezzo.getPrezzo());
+                    b.setTipoBiglietto(prezzo.getTipo());
+                    b.setDataOraSpettacolo(dataStr);
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                bigliettiPerPDF.add(b);
+                ////////////////////////////////////////////////////////////////
             }
 
             // Prenota i posti
             if (allowPrenotazione == true) {
+
                 iter = carrello.entrySet().iterator();
                 while (iter.hasNext()) {
                     Map.Entry pair = (Map.Entry) iter.next();
@@ -145,18 +202,50 @@ public class CheckoutServlet extends HttpServlet {
                 }
 
                 // Invia email
-                
-                
+                //generaPdf(bigliettiPerPDF);
+
                 // Redirect a pagina di successo
                 request.setAttribute("succes", 1);
                 RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
                 rd.forward(request, response);
             } else {
                 // errore
+                request.setAttribute("succes", 0);
+                RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
+                rd.forward(request, response);
             }
 
         }
 
     }
+
+//    private void generaPdf(List<Biglietto> biglietti) {
+//        try {
+//            Document document = new Document();
+//            PdfWriter.getInstance(document, new FileOutputStream(FILE));
+//            document.open();
+//            aggiungiMetaDati(document);
+//
+//            for (Biglietto b : biglietti) {
+//                aggiungiBiglietto(document);
+//            }
+//            document.close();
+//        } catch (Exception e) {
+//            Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, e);
+//        }
+//
+//        /* //debug:
+//         System.out.println("BIGLIETTO:");
+//         System.out.println("Titolo: " + b.getTitoloFilm());
+//         System.out.println("ID posto: " + b.getIdPosto());
+//         System.out.println("Riga posto: " + b.getRigaPosto());
+//         System.out.println("Colonna posto: " + b.getColonnaPosto());
+//         System.out.println("Prezzo: " + b.getPrezzoBiglietto());
+//         System.out.println("TipoBiglietto: " + b.getTipoBiglietto());
+//         System.out.println("DataOra: " + b.getDataOraSpettacolo());
+//         System.out.println("---------------");
+//         */
+//    }
+//}
 
 }

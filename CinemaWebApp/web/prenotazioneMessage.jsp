@@ -22,6 +22,11 @@
                             <h4>Riceverai un e-mail con i dettagli.</h4>
                         </c:when>
 
+                        <c:when test="${requestScope.succes == 0}">
+                            <h3>Prenotazione annullata.</h3>
+                            <h4>Uno dei posti è gia stato prenotato da qualcun altro.</h4>
+                        </c:when>
+
                         <c:otherwise>
                             <h3>Si è verificato un errore nella prenotazione.</h3>
                         </c:otherwise>
