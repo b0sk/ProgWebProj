@@ -36,21 +36,72 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    /* protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
      throws ServletException, IOException {
-     response.setContentType("text/html;charset=UTF-8");
-     try (PrintWriter out = response.getWriter()) {
-     out.println("<!DOCTYPE html>");
-     out.println("<html>");
-     out.println("<head>");
-     out.println("<title>Servlet RiepilogoPrenotazioneServlet</title>");            
-     out.println("</head>");
-     out.println("<body>");
-     out.println("<h1>Servlet RiepilogoPrenotazioneServlet at " + request.getContextPath() + "</h1>");
-     out.println("</body>");
-     out.println("</html>");
+
+        Utente utente;
+        int idUtente;
+        int idSpettacolo;
+        String[] strIdPrezzi;
+        String[] strIdPosti;
+        Map<Integer, Prezzo> carrello;
+        //List<Prezzo> prezzi;
+
+        int prezzoTotale = 0;
+        //List<Posto> posti;
+
+        HttpSession session = request.getSession(true);
+        utente = (Utente) session.getAttribute("utente");
+
+        idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
+        strIdPrezzi = request.getParameterValues("tipo-biglietto");
+        strIdPosti = request.getParameterValues("id-posto");
+
+        //prezzi = new ArrayList();
+        //posti = new ArrayList();
+        carrello = new HashMap();
+        System.out.println("Ciao");
+        try {
+            System.out.println("Asd");
+            // popola la hashmap con id del Posto e il prezzo a lui associato
+            for (int i = 0; i < strIdPrezzi.length; i++) {
+                //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
+                int idPosto = Integer.parseInt(strIdPosti[i]);
+                carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                //calcola il perzzo totale
+                prezzoTotale += carrello.get(idPosto).getPrezzo();
+            }
+
+            // setta i parametri della richiesta e passali a postiSpettacolo.jsp
+            //request.setAttribute("prezzi", prezzi);
+            request.setAttribute("prezzoTotale", prezzoTotale);
+
+            session.setAttribute("carrello", carrello);
+            session.setAttribute("idSpettacoloCarrello", idSpettacolo);
+            //request.setAttribute("strIdPosti", strIdPosti);
+
+        } catch (Exception e) {
+            // redirect a pagina di erroreù
+            System.out.println("LOL");
+            //response.sendRedirect(request.getContextPath() + "/errore.jsp");
+        }
+
+        // controlla se l'utente è loggato
+        if (utente != null) {
+            //System.out.println("UTENTE loggato");
+            //idUtente = utente.getIdUtente();
+            RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
+            rd.forward(request, response);
+        } else {
+            // se l'utente non è loggato rimanda al login...
+            //System.out.println("UTENTE non loggato");
+            RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+            rd.forward(request, response);
+        }
+
      }
-     }*/
+    
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -62,7 +113,9 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+                processRequest(request, response);
 
+/*
         Utente utente;
         int idUtente;
         int idSpettacolo;
@@ -70,71 +123,60 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         String[] strIdPosti;
         Map<Integer, Prezzo> carrello;
         //List<Prezzo> prezzi;
-        
+
         int prezzoTotale = 0;
         //List<Posto> posti;
 
         HttpSession session = request.getSession(true);
         utente = (Utente) session.getAttribute("utente");
 
-        // controlla se l'utente è loggato
-        if (utente != null) {
-            System.out.println("UTENTE loggato");
-            idUtente = utente.getIdUtente();
-            idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
-            strIdPrezzi = request.getParameterValues("tipo-biglietto");
-            strIdPosti = request.getParameterValues("id-posto");
+        idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
+        strIdPrezzi = request.getParameterValues("tipo-biglietto");
+        strIdPosti = request.getParameterValues("id-posto");
 
-            //prezzi = new ArrayList();
-            //posti = new ArrayList();
-            carrello = new HashMap();
-            try {
-                // poèpol la hashmap con id del Posto e il prezzo a lui associato
-                for (int i = 0; i < strIdPrezzi.length; i++) {
-                    //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
-                    //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
-                    int idPosto = Integer.parseInt(strIdPosti[i]);
-                    carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
-                    //calcola il perzzo totale
-                    prezzoTotale += carrello.get(idPosto).getPrezzo();
-                }
-
-                // calcola il prezzo totale
-                /*
-                for (Prezzo p : prezzi) {
-                    prezzoTotale += p.getPrezzo();
-                }*/
-
-                session.setAttribute("carrello", carrello);
-                
-                // setta i parametri della richiesta e passali a postiSpettacolo.jsp
-                //request.setAttribute("prezzi", prezzi);
-                request.setAttribute("prezzoTotale", prezzoTotale);
-                //request.setAttribute("strIdPosti", strIdPosti);
-
-                RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
-                rd.forward(request, response);
-            } catch (Exception e) {
-                // redirect a pagina di errore
-                response.sendRedirect(request.getContextPath() + "/errore.jsp");
+        //prezzi = new ArrayList();
+        //posti = new ArrayList();
+        carrello = new HashMap();
+        System.out.println("Ciao");
+        try {
+            System.out.println("Asd");
+            // popola la hashmap con id del Posto e il prezzo a lui associato
+            for (int i = 0; i < strIdPrezzi.length; i++) {
+                //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
+                int idPosto = Integer.parseInt(strIdPosti[i]);
+                carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                //calcola il perzzo totale
+                prezzoTotale += carrello.get(idPosto).getPrezzo();
             }
 
-            /*
-             System.out.println("idUtente: " + idUtente);
-             System.out.println("idPrezzi:");
-             for(int i=0; i<strIdPrezzi.length; i++){
-             System.out.println("- " + strIdPrezzi[i]);
-             }
-             System.out.println("idPosti:");
-             for(int i=0; i<strIdPosti.length; i++){
-             System.out.println("- " + strIdPosti[i]);
-             }
-             */
-        } else {
-            // se l'utente non è loggato rimanda al login...
-            System.out.println("UTENTE non loggato");
+            // setta i parametri della richiesta e passali a postiSpettacolo.jsp
+            //request.setAttribute("prezzi", prezzi);
+            request.setAttribute("prezzoTotale", prezzoTotale);
+
+            session.setAttribute("carrello", carrello);
+            session.setAttribute("idSpettacoloCarrello", idSpettacolo);
+            //request.setAttribute("strIdPosti", strIdPosti);
+
+        } catch (Exception e) {
+            // redirect a pagina di erroreù
+            System.out.println("LOL");
+            //response.sendRedirect(request.getContextPath() + "/errore.jsp");
         }
 
+        // controlla se l'utente è loggato
+        if (utente != null) {
+            //System.out.println("UTENTE loggato");
+            //idUtente = utente.getIdUtente();
+            RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
+            rd.forward(request, response);
+        } else {
+            // se l'utente non è loggato rimanda al login...
+            //System.out.println("UTENTE non loggato");
+            RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+            rd.forward(request, response);
+        }
+*/
     }
 
     /**
@@ -149,7 +191,8 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Rimanda a una pagina di errore
-        response.sendRedirect(request.getContextPath() + "/errore.jsp");
+        //response.sendRedirect(request.getContextPath() + "/errore.jsp");
+        processRequest(request, response);
 
     }
 

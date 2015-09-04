@@ -42,29 +42,36 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("inputEmail");
         String password = request.getParameter("inputPassword");
 
-            /* controlla nel DB se esiste l'utente (email+password) e autenticalo */
-            Utente user;
-            try {
+        /* controlla nel DB se esiste l'utente (email+password) e autenticalo */
+        Utente user;
+        try {
 
-                user = manager.authenticateUtente(email, password);
+            user = manager.authenticateUtente(email, password);
 
-            } catch (SQLException ex) {
-                throw new ServletException(ex);
-            }
-            // se non esiste, ridirigo verso pagina di login con messaggio di errore
-            if (user == null) {
-                // metto il messaggio di errore come attributo di Request, così nel JSP si vede il messaggio
-                request.setAttribute("message", "Email e/o password sbagliate!");
-                RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
-                rd.forward(request, response);
-            } else {
-                // imposto l'utente connesso come attributo di sessione
-                HttpSession session = request.getSession(true);
-                session.setAttribute("utente", user);
-
-                // mando un redirect alla servlet che carica i prodotti
+        } catch (SQLException ex) {
+            throw new ServletException(ex);
+        }
+        // se non esiste, ridirigo verso pagina di login con messaggio di errore
+        if (user == null) {
+            // metto il messaggio di errore come attributo di Request, così nel JSP si vede il messaggio
+            request.setAttribute("message", "Email e/o password sbagliate!");
+            RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+            rd.forward(request, response);
+        } else {
+            // imposto l'utente connesso come attributo di sessione
+            HttpSession session = request.getSession(true);
+            session.setAttribute("utente", user);
+            
+            // controlla se c'è gia un carrello nella sessione
+            if (session.getAttribute("carrello") == null) {
+                // se non c'è mando un redirect alla home
                 response.sendRedirect(request.getContextPath() + "/Home");
+            }else{
+                // altrimenti mandalo alla conferma di prenotazione
+                response.sendRedirect(request.getContextPath() + "/RiepilogoPrenotazioneServlet?idSpettacolo="+session.getAttribute("idSpettacoloCarrello"));
             }
+
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
