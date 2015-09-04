@@ -15,7 +15,7 @@
 
 <!-- Bootstrap core CSS -->
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!--link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet"-->
 <!-- Optional Bootstrap theme -->
 <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
 
