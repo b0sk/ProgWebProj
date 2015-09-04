@@ -92,9 +92,8 @@
             <c:forEach var="prezzo" items="${requestScope.prezzi}">
                 '<option' <c:if test="${prezzo.tipo == 'normale'}"> + ' selected'</c:if> + ' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>' +
             </c:forEach>
-                ''
-                        );
-                        selectDiv.append(select);
+                    '');
+                selectDiv.append(select);
                 contentRow.append(selectDiv);
 
                 postoLI.append(contentRow);
@@ -107,7 +106,7 @@
                 //console.log("lol");
             });
             
-            /*
+            /* cambiamento di un campo 'select'...
             $(document.body).on('change', 'select', function () {
                     console.log("asd");
             }        
