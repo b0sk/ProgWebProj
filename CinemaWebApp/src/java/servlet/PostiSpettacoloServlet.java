@@ -39,8 +39,7 @@ public class PostiSpettacoloServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int idSpettacolo;
-
+        
         if (request.getParameter("idSpettacolo") != null) { // se idSpettacolo è settato
             List<Posto> posti;
             List<Posto> postiPrenotati;
@@ -48,7 +47,9 @@ public class PostiSpettacoloServlet extends HttpServlet {
             int[][] mappaPosti;
             int righeSala;
             int colonneSala;
+            int idSpettacolo;
 
+            
             idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
 
             try {
