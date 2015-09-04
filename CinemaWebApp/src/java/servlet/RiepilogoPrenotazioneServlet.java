@@ -60,9 +60,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         //prezzi = new ArrayList();
         //posti = new ArrayList();
         carrello = new HashMap();
-        System.out.println("Ciao");
         try {
-            System.out.println("Asd");
             // popola la hashmap con id del Posto e il prezzo a lui associato
             for (int i = 0; i < strIdPrezzi.length; i++) {
                 //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
@@ -83,7 +81,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
 
         } catch (Exception e) {
             // redirect a pagina di erroreù
-            System.out.println("LOL");
+            //System.out.println("LOL");
             //response.sendRedirect(request.getContextPath() + "/errore.jsp");
         }
 
