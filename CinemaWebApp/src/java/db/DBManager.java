@@ -803,6 +803,40 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
+    
+    /**
+     * Controlla se uno spettacolo è attivo in questo momento
+     *
+     * @param idSpettacolo l'id dello spettacolo
+     * @return true se il posto è libero, false altrimenti
+     * @throws SQLException
+     */
+    public boolean isSpettacoloAttivo(int idSpettacolo) throws SQLException {
+        boolean retval; // valore di ritorno della funzione
+        int cnt = 0; // numero di entry trovate (dovrebbe sempre essere 0 o 1)
+        PreparedStatement stm = con.prepareStatement("SELECT COUNT(*) AS CNT FROM Spettacolo WHERE ID_SPETTACOLO = ? AND DATA_ORA > CURRENT TIMESTAMP");
+        try {
+            stm.setString(1, Integer.toString(idSpettacolo));
+            ResultSet rs = stm.executeQuery();
+
+            if (rs.next()) {
+                cnt = rs.getInt(1);
+            }
+
+            // Se trova uno spettacolo nel futuro ritorna true
+            if (cnt != 0) {
+                retval = true;
+            } else {
+                // Se NON trova lo spettacolo nel futuro ritorna false
+                retval = false;
+            }
+        } finally {
+            stm.close();
+        }
+
+        return retval;
+
+    }
 
     /**
      * Restituisce un oggeto Sala in base al suo ID

@@ -24,11 +24,11 @@
 
                         <c:when test="${requestScope.succes == 0}">
                             <h3>Prenotazione annullata.</h3>
-                            <h4>Uno dei posti è gia stato prenotato da qualcun altro.</h4>
+                            <h4 style="color: #ff6666">Uno dei posti è gia stato prenotato da qualcun altro.</h4>
                         </c:when>
 
                         <c:otherwise>
-                            <h3>Si è verificato un errore nella prenotazione.</h3>
+                            <h3 style="color: #ff6666">Si è verificato un errore nella prenotazione.</h3>
                         </c:otherwise>
                     </c:choose>
                     <br>

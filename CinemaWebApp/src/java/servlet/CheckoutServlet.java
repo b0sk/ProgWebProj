@@ -45,6 +45,8 @@ import com.itextpdf.text.pdf.BarcodeQRCode;
 
 public class CheckoutServlet extends HttpServlet {
 
+    private final String PDF_DIRECTORY = getServletContext().getRealPath("/") + "/WEB-INF/PDF/";
+
     private DBManager manager;
 
     @Override
@@ -96,149 +98,147 @@ public class CheckoutServlet extends HttpServlet {
 
         tipoPagamento = request.getParameter("tipoPagamento");
 
-        // calcola il totale da pagare
-        Iterator it = carrello.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            Prezzo prezzo = (Prezzo) pair.getValue();
-            totalePagamento += prezzo.getPrezzo();
-        }
-
-        if (tipoPagamento.equals("cartaCredito")) {
-            // se l'utente paga con carta di credito
-            credito = totalePagamento;
-        } else if (tipoPagamento.equals("creditoUtente")) {
-            // se l'utente paga con credito utente
-            credito = utente.getCredito();
-        } else {
-            // altrimenti errrore
-            response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
-        }
-
-        //se l'untente non ha abbastanza credito
-        if (credito < totalePagamento) {
-            // errore non abbastanza credito
-            request.setAttribute("exception", "Credito non sufficiente");
-            RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
-            rd.forward(request, response);
-            // errore
-            // response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
-        } else {
-
-            // contiene una lista di oggetti biglietto per creare il file pdf
-            List<Biglietto> bigliettiPerPDF = new ArrayList();
-
-            // questa variabile indica se la prenotazione è permessa oppure no
-            // (se ad esempio un posto è gia prenotato viene settata a false)
-            boolean allowPrenotazione = true;
-
-            // controlla se tutti i posti sono liberi e genera la lista bigliettiPerPDF
-            Iterator iter = carrello.entrySet().iterator();
-            while (iter.hasNext()) {
-                Map.Entry pair = (Map.Entry) iter.next();
-                int idPosto = (int) pair.getKey();
-                Prezzo prezzo = (Prezzo) pair.getValue();
-
-                try {
-                    // se uno dei posti è gia occupato non permette la prenotazione
-                    if (!manager.isPostoLibero(idPosto, idSpettacolo)) {
-                        allowPrenotazione = false;
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                ////////////////////////////////////////////////////////////////
-                // genera il biglietto e aggiungilo alla lista
-                Biglietto b = new Biglietto();
-                Posto pst;
-                Spettacolo spett;
-                Film f;
-                Timestamp dataTimestamp;
-                String dataStr;
-                try {
-                    spett = manager.getSpettacoloById(idSpettacolo);
-                    f = manager.getFilmById(spett.getIdFilm());
-                    pst = manager.getPostoById(idPosto);
-
-                    dataTimestamp = spett.getDataOra();
-                    dataStr = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataTimestamp);
-
-                    b.setEmailUtente(utente.getEmail());
-                    b.setTitoloFilm(f.getTitolo());
-                    b.setIdPosto(pst.getIdPosto());
-                    b.setIdSala(pst.getIdSala());
-                    b.setRigaPosto(pst.getRiga());
-                    b.setColonnaPosto(pst.getColonna());
-                    b.setPrezzoBiglietto(prezzo.getPrezzo());
-                    b.setTipoBiglietto(prezzo.getTipo());
-                    b.setDataOraSpettacolo(dataStr);
-
-                } catch (SQLException ex) {
-                    Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                bigliettiPerPDF.add(b);
-                ////////////////////////////////////////////////////////////////
-            }
-
-            // Prenota i posti
-            if (allowPrenotazione == true) {
-
-                iter = carrello.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry pair = (Map.Entry) iter.next();
-                    int idPosto = (int) pair.getKey();
-                    Prezzo p = (Prezzo) pair.getValue();
-                    int idPrezzo = (int) p.getIdPrezzo();
-
-                    try {
-                        manager.prenotaPosto(utente.getIdUtente(), idSpettacolo, idPrezzo, idPosto);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    // SCALA CREDITO
-                    credito -= p.getPrezzo();
-                }
-
-                // Se l'utente ha pagato con il credito
-                // addebita il credito rimanente all'utente
-                if (tipoPagamento.equals("creditoUtente")) {
-                    try {
-                        manager.setUserCredit(utente.getIdUtente(), credito);
-                        // aggiorna la sessione con i nuovi dati utente
-                        Utente u = manager.getUtente(utente.getEmail());
-                        session.setAttribute("utente", u);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-
-                // Invia email
-                generaPdf(bigliettiPerPDF);
-
-                // Redirect a pagina di successo
-                request.setAttribute("succes", 1);
-                RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
-                rd.forward(request, response);
+        try {
+            // Controlla se lo spettacolo è al momento attivo
+            if (!manager.isSpettacoloAttivo(idSpettacolo)) {
+                // errrore lo spettacolo è già passato
+                response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
             } else {
-                // errore posto già prenotato
-                request.setAttribute("succes", 0);
-                RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
-                rd.forward(request, response);
 
-                // errore posto prenotato
-                //request.setAttribute("exception", "Uno dei posti è già stato prenotato");
-                //RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
-                //rd.forward(request, response);
+                // calcola il totale da pagare
+                Iterator it = carrello.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry pair = (Map.Entry) it.next();
+                    Prezzo prezzo = (Prezzo) pair.getValue();
+                    totalePagamento += prezzo.getPrezzo();
+                }
+
+                if (tipoPagamento.equals("cartaCredito")) {
+                    // se l'utente paga con carta di credito
+                    credito = totalePagamento;
+                } else if (tipoPagamento.equals("creditoUtente")) {
+                    // se l'utente paga con credito utente
+                    credito = utente.getCredito();
+                } else {
+                    // altrimenti errrore
+                    response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
+                }
+
+                //se l'untente non ha abbastanza credito
+                if (credito < totalePagamento) {
+                    // errore non abbastanza credito
+                    request.setAttribute("exception", "Credito non sufficiente");
+                    RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+                    rd.forward(request, response);
+                    // errore
+                    // response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
+                } else {
+
+                    // contiene una lista di oggetti biglietto per creare il file pdf
+                    List<Biglietto> bigliettiPerPDF = new ArrayList();
+
+                    // questa variabile indica se la prenotazione è permessa oppure no
+                    // (se ad esempio un posto è gia prenotato viene settata a false)
+                    boolean allowPrenotazione = true;
+
+                    // controlla se tutti i posti sono liberi e genera la lista bigliettiPerPDF
+                    Iterator iter = carrello.entrySet().iterator();
+                    while (iter.hasNext()) {
+                        Map.Entry pair = (Map.Entry) iter.next();
+                        int idPosto = (int) pair.getKey();
+                        Prezzo prezzo = (Prezzo) pair.getValue();
+
+                        // se uno dei posti è gia occupato non permette la prenotazione
+                        if (!manager.isPostoLibero(idPosto, idSpettacolo)) {
+                            allowPrenotazione = false;
+                        }
+
+                        ////////////////////////////////////////////////////////////////
+                        // genera il biglietto e aggiungilo alla lista
+                        Biglietto b = new Biglietto();
+                        Posto pst;
+                        Spettacolo spett;
+                        Film f;
+                        Timestamp dataTimestamp;
+                        String dataStr;
+
+                        spett = manager.getSpettacoloById(idSpettacolo);
+                        f = manager.getFilmById(spett.getIdFilm());
+                        pst = manager.getPostoById(idPosto);
+
+                        dataTimestamp = spett.getDataOra();
+                        dataStr = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataTimestamp);
+
+                        b.setEmailUtente(utente.getEmail());
+                        b.setTitoloFilm(f.getTitolo());
+                        b.setIdPosto(pst.getIdPosto());
+                        b.setIdSala(pst.getIdSala());
+                        b.setRigaPosto(pst.getRiga());
+                        b.setColonnaPosto(pst.getColonna());
+                        b.setPrezzoBiglietto(prezzo.getPrezzo());
+                        b.setTipoBiglietto(prezzo.getTipo());
+                        b.setDataOraSpettacolo(dataStr);
+
+                        bigliettiPerPDF.add(b);
+                        ////////////////////////////////////////////////////////////////
+                    }
+
+                    // Se la prenotazione è permessa, prenota i posti
+                    if (allowPrenotazione == true) {
+
+                        iter = carrello.entrySet().iterator();
+                        while (iter.hasNext()) {
+                            Map.Entry pair = (Map.Entry) iter.next();
+                            int idPosto = (int) pair.getKey();
+                            Prezzo p = (Prezzo) pair.getValue();
+                            int idPrezzo = (int) p.getIdPrezzo();
+
+                            manager.prenotaPosto(utente.getIdUtente(), idSpettacolo, idPrezzo, idPosto);
+
+                            // SCALA CREDITO
+                            credito -= p.getPrezzo();
+                        }
+
+                        // Se l'utente ha pagato con il credito
+                        // addebita il credito rimanente all'utente
+                        if (tipoPagamento.equals("creditoUtente")) {
+                            manager.setUserCredit(utente.getIdUtente(), credito);
+                            // aggiorna la sessione con i nuovi dati utente
+                            Utente u = manager.getUtente(utente.getEmail());
+                            session.setAttribute("utente", u);
+                        }
+
+                        // genera il file PDF contente i biglietti
+                        generaPdf(bigliettiPerPDF);
+                        // 
+
+                        // Redirect a pagina di successo
+                        request.setAttribute("succes", 1);
+                        RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
+                        rd.forward(request, response);
+                    } else {
+                        // errore posto già prenotato
+                        request.setAttribute("succes", 0);
+                        RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
+                        rd.forward(request, response);
+
+                        // errore posto prenotato
+                        //request.setAttribute("exception", "Uno dei posti è già stato prenotato");
+                        //RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+                        //rd.forward(request, response);
+                    }
+
+                }
+
             }
-
+        } catch (SQLException ex) {
+            Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     private void generaPdf(List<Biglietto> biglietti) {
-        String FILE = getServletContext().getRealPath("/") + "/WEB-INF/PDF/Testone.pdf";
+        String FILE = PDF_DIRECTORY + "Testone.pdf";
 
         try {
             Document document = new Document();
@@ -321,14 +321,14 @@ public class CheckoutServlet extends HttpServlet {
                 new Paragraph("CinemaWebApp", smallBold));
         paragrafoBigl.add(
                 new Paragraph("3883 Howard Hughes Pkwy, Las Vegas, NV 89169", smallBold));
+
         // Genera e aggiungi il QR-Code
         // Create QR Code by using BarcodeQRCode Class
         BarcodeQRCode my_code = new BarcodeQRCode(biglietto.getEmailUtente() + "\n"
-                                + biglietto.getTitoloFilm() + "\n"
-                                + biglietto.getDataOraSpettacolo() + "\n"
-                                + "posto "+biglietto.getIdPosto() + " (" +biglietto.getRigaPosto()+"-"+biglietto.getColonnaPosto()+")" + "\n"
-                                + biglietto.getTipoBiglietto() + " - prezzo: " + biglietto.getPrezzoBiglietto()
-                                , 200, 200, null);
+                + biglietto.getTitoloFilm() + "\n"
+                + biglietto.getDataOraSpettacolo() + "\n"
+                + "posto " + biglietto.getIdPosto() + " (" + biglietto.getRigaPosto() + "-" + biglietto.getColonnaPosto() + ")" + "\n"
+                + biglietto.getTipoBiglietto() + " - prezzo: " + biglietto.getPrezzoBiglietto(), 200, 200, null);
         // Get Image corresponding to the input string
         Image qr_image = my_code.getImage();
         // Stamp the QR image into the PDF document
