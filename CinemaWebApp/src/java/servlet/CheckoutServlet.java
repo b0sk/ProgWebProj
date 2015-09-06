@@ -94,7 +94,10 @@ public class CheckoutServlet extends HttpServlet {
         }
 
         if (credito < totalePagamento) {
-            // errore
+            // errore non abbastanza credito
+            request.setAttribute("exception", "Credito non sufficiente");
+            RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+            rd.forward(request, response);
         } else {
 
             boolean allowPrenotazione = true;
@@ -145,14 +148,15 @@ public class CheckoutServlet extends HttpServlet {
                 }
 
                 // Invia email
-                
-                
                 // Redirect a pagina di successo
                 request.setAttribute("succes", 1);
                 RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
                 rd.forward(request, response);
             } else {
-                // errore
+                // errore posto prenotato
+                request.setAttribute("exception", "Uno dei posti è già stato prenotato");
+                RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+                rd.forward(request, response);
             }
 
         }
