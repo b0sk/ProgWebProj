@@ -36,9 +36,12 @@ import utils.Biglietto;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
+// QR-CODE
+import com.itextpdf.text.pdf.BarcodeQRCode;
 
 public class CheckoutServlet extends HttpServlet {
 
@@ -223,7 +226,7 @@ public class CheckoutServlet extends HttpServlet {
                 request.setAttribute("succes", 0);
                 RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
                 rd.forward(request, response);
-                
+
                 // errore posto prenotato
                 //request.setAttribute("exception", "Uno dei posti è già stato prenotato");
                 //RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
@@ -235,7 +238,7 @@ public class CheckoutServlet extends HttpServlet {
     }
 
     private void generaPdf(List<Biglietto> biglietti) {
-         String FILE = getServletContext().getRealPath("/") + "/WEB-INF/PDF/Testone.pdf";
+        String FILE = getServletContext().getRealPath("/") + "/WEB-INF/PDF/Testone.pdf";
 
         try {
             Document document = new Document();
@@ -310,14 +313,26 @@ public class CheckoutServlet extends HttpServlet {
                 new Paragraph("Sala " + biglietto.getIdSala(), smallBold));
 
         paragrafoBigl.add(
-                new Paragraph("Posto " + biglietto.getIdPosto() 
-                        + " (riga: " + biglietto.getRigaPosto() + " - colonna : " 
+                new Paragraph("Posto " + biglietto.getIdPosto()
+                        + " (riga: " + biglietto.getRigaPosto() + " - colonna : "
                         + biglietto.getColonnaPosto() + ")", smallBold));
 
         paragrafoBigl.add(
                 new Paragraph("CinemaWebApp", smallBold));
         paragrafoBigl.add(
                 new Paragraph("3883 Howard Hughes Pkwy, Las Vegas, NV 89169", smallBold));
+        // Genera e aggiungi il QR-Code
+        // Create QR Code by using BarcodeQRCode Class
+        BarcodeQRCode my_code = new BarcodeQRCode(biglietto.getEmailUtente() + "\n"
+                                + biglietto.getTitoloFilm() + "\n"
+                                + biglietto.getDataOraSpettacolo() + "\n"
+                                + "posto "+biglietto.getIdPosto() + " (" +biglietto.getRigaPosto()+"-"+biglietto.getColonnaPosto()+")" + "\n"
+                                + biglietto.getTipoBiglietto() + " - prezzo: " + biglietto.getPrezzoBiglietto()
+                                , 200, 200, null);
+        // Get Image corresponding to the input string
+        Image qr_image = my_code.getImage();
+        // Stamp the QR image into the PDF document
+        paragrafoBigl.add(qr_image);
 
         // Aggiunta al documento
         document.add(paragrafoBigl);
