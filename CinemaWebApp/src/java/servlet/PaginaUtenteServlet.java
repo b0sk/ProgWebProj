@@ -57,6 +57,10 @@ public class PaginaUtenteServlet extends HttpServlet {
         // se l'utente è loggato come utente normale 
         if (utente != null && utente.getIdRuolo() == 2) {
 
+            // Aggiorna l'oggetto utente in sessione
+            Utente u = manager.getUtente(utente.getEmail());
+            session.setAttribute("utente", u);
+
             idUtente = utente.getIdUtente();
 
             //response.sendRedirect(request.getContextPath() + "/paginaUtente.jsp");

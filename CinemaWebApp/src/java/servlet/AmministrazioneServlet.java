@@ -62,9 +62,13 @@ public class AmministrazioneServlet extends HttpServlet {
         // se l'utente è loggato come utente amministratore va alla pagina amministrazione
         if (utente != null && utente.getIdRuolo() == 1) {
 
+            // Aggiorna l'oggetto utente in sessione
+            Utente u = manager.getUtente(utente.getEmail());
+            session.setAttribute("utente", u);
+
             // Gestisce la cancellazione di una prenotazione
             if (request.getParameterMap().containsKey("idPrenotazioneCanc")) {
-                Prenotazione prenot = manager.getPrenotazioneById(Integer.parseInt((String)request.getParameter("idPrenotazioneCanc")));
+                Prenotazione prenot = manager.getPrenotazioneById(Integer.parseInt((String) request.getParameter("idPrenotazioneCanc")));
                 if (prenot != null) {
                     Prezzo prezzo = manager.getPrezzoById(prenot.getIdPrezzo());
 
@@ -109,7 +113,7 @@ public class AmministrazioneServlet extends HttpServlet {
                 filmPrenotazAtt.add(manager.getFilmById(spett.getIdFilm()));
                 prezziPrenotazAtt.add(manager.getPrezzoById(p.getIdPrezzo()));
             }
-            
+
             // OTTIENI la lista dei posti prenotati e degli incassi per ogni Spettacolo
             // ottieni la lista degli spettacoli attivi
             List<Spettacolo> spettacoliAttivi = manager.getSpettacoliAttivi();
@@ -117,15 +121,14 @@ public class AmministrazioneServlet extends HttpServlet {
             List<Integer> numPrenotazioniSpettacoli = new ArrayList<Integer>();
             List<Integer> incassiSpettacoli = new ArrayList<Integer>();
             // ottieni il Film, numero di Prenotazioni e incasso per ogni Spettacolo
-            for (Spettacolo s : spettacoliAttivi){
+            for (Spettacolo s : spettacoliAttivi) {
                 Film film = new Film();
                 film = manager.getFilmById(s.getIdFilm());
                 filmSpettacoli.add(film);
                 numPrenotazioniSpettacoli.add(manager.getNPrenotazioniSpettacolo(s.getIdSpettacolo()));
                 incassiSpettacoli.add(manager.getIncassoSpettacolo(s.getIdSpettacolo()));
             }
-            
-            
+
             // setta gli attributi da inviare ad amministrazione jsp
             request.setAttribute("incassiFilm", incassiFilm);
             request.setAttribute("top10Users", top10Users);
@@ -135,7 +138,7 @@ public class AmministrazioneServlet extends HttpServlet {
             request.setAttribute("utentiPA", utentiPrenotazAtt);
             request.setAttribute("filmPA", filmPrenotazAtt);
             request.setAttribute("prezziPA", prezziPrenotazAtt);
-            
+
             request.setAttribute("spettacoliAtt", spettacoliAttivi);
             request.setAttribute("filmSpettacoliAtt", filmSpettacoli);
             request.setAttribute("nPrenotazioniSpettAtt", numPrenotazioniSpettacoli);
