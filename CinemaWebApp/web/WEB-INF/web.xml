@@ -44,6 +44,10 @@
         <servlet-name>CheckoutServlet</servlet-name>
         <servlet-class>servlet.CheckoutServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SettaProgrammazione</servlet-name>
+        <servlet-class>servlet.SettaProgrammazione</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/Home</url-pattern>
@@ -83,6 +87,10 @@
     <servlet-mapping>
         <servlet-name>CheckoutServlet</servlet-name>
         <url-pattern>/CheckoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SettaProgrammazione</servlet-name>
+        <url-pattern>/SettaProgrammazione</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

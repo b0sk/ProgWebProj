@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -180,9 +181,10 @@ public class DBManager implements Serializable {
 
         return spettacoli;
     }
-/**
-     * Restituisce una lista di spettacoli  attivi(non ancora iniziati)
-     * per un determinato film in base al suo ID 
+
+    /**
+     * Restituisce una lista di spettacoli attivi(non ancora iniziati) per un
+     * determinato film in base al suo ID
      *
      * @param idFilm ID del film
      * @return una lista di spettacoli, oppure null se non ci sono spettacoli
@@ -216,7 +218,7 @@ public class DBManager implements Serializable {
 
         return spettacoli;
     }
-    
+
     /**
      * Restituisce una lista di spettacoli attivi in questo momento
      *
@@ -295,9 +297,9 @@ public class DBManager implements Serializable {
         int incasso = 0;
 
         PreparedStatement stm = con.prepareStatement("select Sum(Prezzo.PREZZO) as Incasso "
-                                                    + "from Spettacolo left join Prenotazione on Spettacolo.ID_SPETTACOLO = Prenotazione.ID_SPETTACOLO "
-                                                    + "    left join Prezzo on Prenotazione.ID_PREZZO = Prezzo.ID_PREZZO "
-                                                    + "where Spettacolo.ID_SPETTACOLO = ?");
+                + "from Spettacolo left join Prenotazione on Spettacolo.ID_SPETTACOLO = Prenotazione.ID_SPETTACOLO "
+                + "    left join Prezzo on Prenotazione.ID_PREZZO = Prezzo.ID_PREZZO "
+                + "where Spettacolo.ID_SPETTACOLO = ?");
         try {
             stm.setString(1, Integer.toString(idSpettacolo));
             ResultSet rs = stm.executeQuery();
@@ -633,7 +635,7 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Aggiunge un certo credito ad un utente specificato
      *
@@ -663,7 +665,6 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-
 
     /**
      * Rimuove una prenotazione
@@ -733,7 +734,7 @@ public class DBManager implements Serializable {
 
         return prenotazioniAttive;
     }
-    
+
     /**
      * Restituisce un oggeto Sala in base al suo ID
      *
@@ -803,7 +804,7 @@ public class DBManager implements Serializable {
             stm.close();
         }
     }
-    
+
     /**
      * Controlla se uno spettacolo è attivo in questo momento
      *
@@ -836,6 +837,37 @@ public class DBManager implements Serializable {
 
         return retval;
 
+    }
+
+    /**
+     * Setta la DATA_ORA di uno spettacolo
+     *
+     * @param idSpettacolo l'ID dello spettacolo da aggiornare
+     * @param time il timestamp da settare allo spettacolo
+     * @return true se lo spettacolo è stato aggiornato, false altrimenti
+     *
+     * @throws SQLException
+     */
+    public boolean setDataOraSpettacolo(int idSpettacolo, Timestamp time) throws SQLException {
+
+        PreparedStatement stm = con.prepareStatement("UPDATE SPETTACOLO SET DATA_ORA = ? WHERE ID_SPETTACOLO = ?");
+        try {
+            stm.setString(1, time.toString());
+            stm.setString(2, Integer.toString(idSpettacolo));
+            
+
+            int righeAggiornate = stm.executeUpdate();
+            if (righeAggiornate > 0) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            return false;
+        } finally {
+            stm.close();
+        }
     }
 
     /**
@@ -961,7 +993,7 @@ public class DBManager implements Serializable {
 
         return posti;
     }
-    
+
     /**
      * Controlla se un posto è libero per un determinato spettacolo
      *
@@ -997,7 +1029,7 @@ public class DBManager implements Serializable {
         return retval;
 
     }
-    
+
     /**
      * Prenota un posto
      *
@@ -1013,7 +1045,7 @@ public class DBManager implements Serializable {
         boolean retval; // valore di ritorno della funzione
         int cnt = 0; // numero di entry con la stessa email trovate (dovrebbe sempre essere 0 o 1)
         PreparedStatement stm = con.prepareStatement("INSERT INTO PRENOTAZIONE (ID_UTENTE, ID_SPETTACOLO, ID_PREZZO, ID_POSTO, DATA_ORA_OPERAZIONE) "
-                                                    + "VALUES (?, ?, ?, ?, CURRENT TIMESTAMP)");
+                + "VALUES (?, ?, ?, ?, CURRENT TIMESTAMP)");
         try {
             stm.setString(1, Integer.toString(idUtente));
             stm.setString(2, Integer.toString(idSpettacolo));
@@ -1021,14 +1053,14 @@ public class DBManager implements Serializable {
             stm.setString(4, Integer.toString(idPosto));
             cnt = stm.executeUpdate();
 
-            if(cnt>0){
+            if (cnt > 0) {
                 retval = true;
             } else {
                 retval = false;
             }
-        }catch(Exception ex){
+        } catch (Exception ex) {
             retval = false;
-        }finally {
+        } finally {
             stm.close();
         }
 
