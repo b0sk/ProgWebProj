@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servlet;
 
 import com.itextpdf.text.BaseColor;
@@ -29,6 +24,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.Properties;
 
 import utils.Biglietto;
 
@@ -42,10 +39,25 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 // QR-CODE
 import com.itextpdf.text.pdf.BarcodeQRCode;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+// MAIL
+import javax.mail.Authenticator;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class CheckoutServlet extends HttpServlet {
 
-    private final String PDF_DIRECTORY = getServletContext().getRealPath("/") + "/WEB-INF/PDF/";
+    private String PDF_DIRECTORY;
 
     private DBManager manager;
 
@@ -53,6 +65,7 @@ public class CheckoutServlet extends HttpServlet {
     public void init() throws ServletException {
         // inizializza il DBManager dagli attributi di Application
         this.manager = (DBManager) super.getServletContext().getAttribute("dbmanager");
+        this.PDF_DIRECTORY = getServletContext().getRealPath("/") + "/WEB-INF/PDF/";
     }
 
     /**
@@ -209,8 +222,9 @@ public class CheckoutServlet extends HttpServlet {
                         }
 
                         // genera il file PDF contente i biglietti
-                        generaPdf(bigliettiPerPDF);
-                        // 
+                        generaPdf(bigliettiPerPDF, utente.getEmail() + ".pdf");
+                        // invia l'email
+                        sendMailWithAttachment(utente.getEmail(), PDF_DIRECTORY + utente.getEmail() + ".pdf");
 
                         // Redirect a pagina di successo
                         request.setAttribute("succes", 1);
@@ -237,12 +251,12 @@ public class CheckoutServlet extends HttpServlet {
 
     }
 
-    private void generaPdf(List<Biglietto> biglietti) {
-        String FILE = PDF_DIRECTORY + "Testone.pdf";
+    private void generaPdf(List<Biglietto> biglietti, String filename) {
+        String file = PDF_DIRECTORY + filename;
 
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(FILE));
+            PdfWriter.getInstance(document, new FileOutputStream(file));
             document.open();
             aggiungiMetaDati(document, biglietti.get(0).getTitoloFilm());
 
@@ -301,27 +315,21 @@ public class CheckoutServlet extends HttpServlet {
         // Aggiungi informazioni sulla prenotazione
         paragrafoBigl.add(
                 new Paragraph("Film: " + biglietto.getTitoloFilm(), smallBold));
-
         paragrafoBigl.add(
                 new Paragraph("Data e ora: " + biglietto.getDataOraSpettacolo(), smallBold));
-
         paragrafoBigl.add(
                 new Paragraph("Tipo biglietto: " + biglietto.getTipoBiglietto() + " - "
                         + biglietto.getPrezzoBiglietto() + " €", smallBold));
-
         paragrafoBigl.add(
                 new Paragraph("Sala " + biglietto.getIdSala(), smallBold));
-
         paragrafoBigl.add(
                 new Paragraph("Posto " + biglietto.getIdPosto()
                         + " (riga: " + biglietto.getRigaPosto() + " - colonna : "
                         + biglietto.getColonnaPosto() + ")", smallBold));
-
         paragrafoBigl.add(
                 new Paragraph("CinemaWebApp", smallBold));
         paragrafoBigl.add(
                 new Paragraph("3883 Howard Hughes Pkwy, Las Vegas, NV 89169", smallBold));
-
         // Genera e aggiungi il QR-Code
         // Create QR Code by using BarcodeQRCode Class
         BarcodeQRCode my_code = new BarcodeQRCode(biglietto.getEmailUtente() + "\n"
@@ -345,6 +353,66 @@ public class CheckoutServlet extends HttpServlet {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
         }
+    }
+
+    private void sendMailWithAttachment(String toEmail, String percorsoAllegato) {
+        try {
+            final String username = "cinemawebapp@gmail.com";
+            final String password = "cinemawebapp1";
+
+            // Get a Properties object to set the mailing configuration
+            // parameters
+            Properties props = System.getProperties();
+            props.setProperty("mail.smtp.host", "smtp.gmail.com");
+            props.setProperty("mail.smtp.port", "465");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.debug", "true");
+            //We create the session object with the authentication information
+            Session session = Session.getDefaultInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication
+                        getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+            //Create a new message
+            Message msg = new MimeMessage(session);
+            //Set the FROM and TO fields –
+            msg.setFrom(new InternetAddress(username + ""));
+            msg.setRecipients(Message.RecipientType.TO,
+                    InternetAddress.parse(toEmail, false));
+            // Set Subjetc
+            msg.setSubject("Prenotazione CinemaWebApp");
+            // Set sent date
+            msg.setSentDate(new Date());
+
+            // Create multipart message
+            Multipart multipart = new MimeMultipart();
+            // Set Text
+            BodyPart messageBodyPart1 = new MimeBodyPart();
+            messageBodyPart1.setText("La tua prenotazione è stata effettuata con successo.\n "
+                    + "Il PDF allegato a questa e-mail contiene i biglietti che hai prenotato.");
+            // Add pdf attachment
+            DataSource source = new FileDataSource(percorsoAllegato);
+            BodyPart messageBodyPart2 = new MimeBodyPart();
+            messageBodyPart2.setDataHandler(new DataHandler(source));
+            messageBodyPart2.setFileName("Biglietto.pdf");
+
+            // Add parts to Multipart message
+            multipart.addBodyPart(messageBodyPart1);
+            multipart.addBodyPart(messageBodyPart2);
+            msg.setContent(multipart);
+            
+            //We create the transport object to actually send the e-mail
+            Transport transport = session.getTransport("smtps");
+            transport.connect("smtp.gmail.com", 465, username, password);
+            transport.sendMessage(msg, msg.getAllRecipients());
+            transport.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
