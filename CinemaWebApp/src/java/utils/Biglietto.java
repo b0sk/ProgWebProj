@@ -9,22 +9,25 @@ public class Biglietto {
 
     private String infoCinema = "3883 Howard Hughes Pkwy, Las Vegas, NV 89169";
     private String nomeCinema = "CinemaWebApp";
+    private String emailUtente;
     private String titoloFilm;
     private int idPosto;
+    private int idSala;
     private int rigaPosto;
     private int colonnaPosto;
     private double prezzoBiglietto;
     private String tipoBiglietto;
     private String dataOraSpettacolo;
-    //QRCODE
 
     public Biglietto() {
     }
 
-    public Biglietto(String titoloFilm, int idPosto, int rigaPosto, int colonnaPosto, 
+    public Biglietto(String emailUtente, String titoloFilm, int idPosto, int idSala, int rigaPosto, int colonnaPosto, 
                 double prezzoBiglietto, String tipoBiglietto, String dataOraSpettacolo) {
+        this.emailUtente = emailUtente;
         this.titoloFilm = titoloFilm;
         this.idPosto = idPosto;
+        this.idSala = idSala;
         this.rigaPosto = rigaPosto;
         this.colonnaPosto = colonnaPosto;
         this.prezzoBiglietto = prezzoBiglietto;
@@ -156,6 +159,34 @@ public class Biglietto {
      */
     public void setDataOraSpettacolo(String dataOraSpettacolo) {
         this.dataOraSpettacolo = dataOraSpettacolo;
+    }
+
+    /**
+     * @return the idSala
+     */
+    public int getIdSala() {
+        return idSala;
+    }
+
+    /**
+     * @param idSala the idSala to set
+     */
+    public void setIdSala(int idSala) {
+        this.idSala = idSala;
+    }
+
+    /**
+     * @return the emailUtente
+     */
+    public String getEmailUtente() {
+        return emailUtente;
+    }
+
+    /**
+     * @param emailUtente the emailUtente to set
+     */
+    public void setEmailUtente(String emailUtente) {
+        this.emailUtente = emailUtente;
     }
 
 }

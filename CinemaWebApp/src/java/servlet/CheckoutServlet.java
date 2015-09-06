@@ -5,6 +5,7 @@
  */
 package servlet;
 
+import com.itextpdf.text.BaseColor;
 import db.DBManager;
 import db.Film;
 import db.Posto;
@@ -32,9 +33,12 @@ import javax.servlet.http.HttpSession;
 import utils.Biglietto;
 
 // PDF
-//import com.itextpdf.text.Document;
-//import com.itextpdf.text.pdf.PdfWriter;
-//import java.io.FileOutputStream;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.io.FileOutputStream;
 
 public class CheckoutServlet extends HttpServlet {
 
@@ -153,8 +157,10 @@ public class CheckoutServlet extends HttpServlet {
                     dataTimestamp = spett.getDataOra();
                     dataStr = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(dataTimestamp);
 
+                    b.setEmailUtente(utente.getEmail());
                     b.setTitoloFilm(f.getTitolo());
                     b.setIdPosto(pst.getIdPosto());
+                    b.setIdSala(pst.getIdSala());
                     b.setRigaPosto(pst.getRiga());
                     b.setColonnaPosto(pst.getColonna());
                     b.setPrezzoBiglietto(prezzo.getPrezzo());
@@ -202,7 +208,7 @@ public class CheckoutServlet extends HttpServlet {
                 }
 
                 // Invia email
-                //generaPdf(bigliettiPerPDF);
+                generaPdf(bigliettiPerPDF);
 
                 // Redirect a pagina di successo
                 request.setAttribute("succes", 1);
@@ -219,33 +225,102 @@ public class CheckoutServlet extends HttpServlet {
 
     }
 
-//    private void generaPdf(List<Biglietto> biglietti) {
-//        try {
-//            Document document = new Document();
-//            PdfWriter.getInstance(document, new FileOutputStream(FILE));
-//            document.open();
-//            aggiungiMetaDati(document);
-//
-//            for (Biglietto b : biglietti) {
-//                aggiungiBiglietto(document);
-//            }
-//            document.close();
-//        } catch (Exception e) {
-//            Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, e);
-//        }
-//
-//        /* //debug:
-//         System.out.println("BIGLIETTO:");
-//         System.out.println("Titolo: " + b.getTitoloFilm());
-//         System.out.println("ID posto: " + b.getIdPosto());
-//         System.out.println("Riga posto: " + b.getRigaPosto());
-//         System.out.println("Colonna posto: " + b.getColonnaPosto());
-//         System.out.println("Prezzo: " + b.getPrezzoBiglietto());
-//         System.out.println("TipoBiglietto: " + b.getTipoBiglietto());
-//         System.out.println("DataOra: " + b.getDataOraSpettacolo());
-//         System.out.println("---------------");
-//         */
-//    }
-//}
+    private void generaPdf(List<Biglietto> biglietti) {
+         String FILE = getServletContext().getRealPath("/") + "/WEB-INF/PDF/Testone.pdf";
+
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(FILE));
+            document.open();
+            aggiungiMetaDati(document, biglietti.get(0).getTitoloFilm());
+
+            for (Biglietto b : biglietti) {
+                aggiungiBiglietto(document, b);
+            }
+            document.close();
+        } catch (Exception e) {
+            Logger.getLogger(CheckoutServlet.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        /* //debug:
+         System.out.println("BIGLIETTO:");
+         System.out.println("Titolo: " + b.getTitoloFilm());
+         System.out.println("ID posto: " + b.getIdPosto());
+         System.out.println("Riga posto: " + b.getRigaPosto());
+         System.out.println("Colonna posto: " + b.getColonnaPosto());
+         System.out.println("Prezzo: " + b.getPrezzoBiglietto());
+         System.out.println("TipoBiglietto: " + b.getTipoBiglietto());
+         System.out.println("DataOra: " + b.getDataOraSpettacolo());
+         System.out.println("---------------");
+         */
+    }
+
+    private static void aggiungiMetaDati(Document document, String titolo) {
+        document.addTitle("Prenotazione " + titolo);
+        document.addAuthor("CinemaWebApp");
+        document.addCreator("CinemaWebApp");
+    }
+
+    private static void aggiungiBiglietto(Document document, Biglietto biglietto) throws DocumentException {
+
+        Font bigFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+        Font bigFontOrange = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD, BaseColor.ORANGE);
+        Font redFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL, BaseColor.RED);
+        Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+        Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+        Font verySmall = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
+
+        Paragraph paragrafoBigl = new Paragraph();
+
+        // Aggiunge due linee vuota
+        aggiungiLineaVuota(paragrafoBigl,
+                2);
+
+        // Aggiunge il titolo
+        paragrafoBigl.add(
+                new Paragraph("Ticket di prenotazione per " + biglietto.getTitoloFilm(), bigFontOrange));
+        // Aggiungiamo il titolo
+        paragrafoBigl.add(
+                new Paragraph("Utente: " + biglietto.getEmailUtente(), verySmall));
+
+        aggiungiLineaVuota(paragrafoBigl,
+                1);
+
+        // Aggiungi informazioni sulla prenotazione
+        paragrafoBigl.add(
+                new Paragraph("Film: " + biglietto.getTitoloFilm(), smallBold));
+
+        paragrafoBigl.add(
+                new Paragraph("Data e ora: " + biglietto.getDataOraSpettacolo(), smallBold));
+
+        paragrafoBigl.add(
+                new Paragraph("Tipo biglietto: " + biglietto.getTipoBiglietto() + " - "
+                        + biglietto.getPrezzoBiglietto() + " €", smallBold));
+
+        paragrafoBigl.add(
+                new Paragraph("Sala " + biglietto.getIdSala(), smallBold));
+
+        paragrafoBigl.add(
+                new Paragraph("Posto " + biglietto.getIdPosto() 
+                        + " (riga: " + biglietto.getRigaPosto() + " - colonna : " 
+                        + biglietto.getColonnaPosto() + ")", smallBold));
+
+        paragrafoBigl.add(
+                new Paragraph("CinemaWebApp", smallBold));
+        paragrafoBigl.add(
+                new Paragraph("3883 Howard Hughes Pkwy, Las Vegas, NV 89169", smallBold));
+
+        // Aggiunta al documento
+        document.add(paragrafoBigl);
+
+        // Nuova pagina
+        document.newPage();
+    }
+
+    private static void aggiungiLineaVuota(Paragraph paragraph, int number) {
+        for (int i = 0; i < number; i++) {
+            paragraph.add(new Paragraph(" "));
+        }
+    }
 
 }
