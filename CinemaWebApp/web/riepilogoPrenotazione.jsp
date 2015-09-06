@@ -25,8 +25,9 @@
                     <c:forEach var="elemento" items="${sessionScope.carrello}">
                         <p>Posto ${elemento.key} - Tipo biglietto: ${elemento.value.tipo} ${elemento.value.prezzo}€ </p>
                     </c:forEach>
+                        
 
-                    <h4>Totale: ${requestScope.prezzoTotale} €</h4>
+                    <h4>Totale: ${sessionScope.prezzoTotale} €</h4>     <!-- modificato per prendere dalla sessione invece che dalla request -->
 
                     <form method="POST" action="CheckoutServlet">
                         <h3>Metodo di pagamento:</h3>
@@ -45,7 +46,7 @@
                             </label> 
                         </div>
                         <input class="btn btn-primary" type="submit" value="Conferma"/>
-                        <a href="CheckoutServlet?annulla=1" class="btn btn-danger" role="button">Annulla</a>
+                        <a href="PostiSpettacoloServlet?idSpettacolo=${sessionScope.idSpettacoloCarrello}" class="btn btn-danger" role="button">Annulla</a>  <!-- fixed -->
 
 
                     </form>

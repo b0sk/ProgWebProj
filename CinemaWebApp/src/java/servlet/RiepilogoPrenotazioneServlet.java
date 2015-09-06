@@ -60,6 +60,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         //prezzi = new ArrayList();
         //posti = new ArrayList();
         carrello = new HashMap();
+        
         try {
             // popola la hashmap con id del Posto e il prezzo a lui associato
             for (int i = 0; i < strIdPrezzi.length; i++) {
@@ -69,11 +70,17 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
                 carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
                 //calcola il perzzo totale
                 prezzoTotale += carrello.get(idPosto).getPrezzo();
+                System.out.println(""+ prezzoTotale + " "+ carrello.get(idPosto).getPrezzo());
+                //System.err.println(""+ carrello.get(idPosto).getPrezzo());
             }
 
             // setta i parametri della richiesta e passali a postiSpettacolo.jsp
             //request.setAttribute("prezzi", prezzi);
-            request.setAttribute("prezzoTotale", prezzoTotale);
+            
+            
+            //request.setAttribute("prezzoTotale", prezzoTotale);   tolto nn funziona correttamente
+            session.setAttribute("prezzoTotale", prezzoTotale);   //Questo funziona
+            //request.setAttribute("Id")
 
             session.setAttribute("carrello", carrello);
             session.setAttribute("idSpettacoloCarrello", idSpettacolo);
