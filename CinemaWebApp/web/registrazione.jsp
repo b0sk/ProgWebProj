@@ -24,7 +24,7 @@
                 <p style="color: #ff6666">${requestScope.errorMessage}</p>
             </div>
         </c:if>
-        
+
         <!-- Script per controllo corrispondenza password -->
         <script type="text/javascript">
             function checkPwd() {
@@ -77,5 +77,7 @@
             </div>
         </div> <!-- /container -->
 
+        <%-- Include the footer --%>
+        <%@ include file="include/footer.jsp" %>
     </body>
 </html>

@@ -15,9 +15,6 @@
 
         <!-- c:set var="film" value="${requestScope.film}" / -->
 
-        <!-- include jQuery -->
-        <script src="js/jQuery/jquery-2.1.4.js"></script>
-
         <style>
             .posto {
                 text-align: center;
@@ -78,61 +75,7 @@
             }
         </style>
 
-        <script type="text/javascript">
-            // click su un posto libero
-            $(document.body).on('click', '.posto-l', function () {
-                $(this).addClass("posto-selected").removeClass("posto-l");
-                var id = $(this).attr("id");
 
-                var postoLI = $("<li></li>").addClass('li-posto').attr("id", "p" + id);
-                postoLI.append('<input type="hidden" name="id-posto" value="' + id + '" />');
-
-                var contentRow = $("<div></div>").addClass('row');
-                contentRow.append('<div class="col-sm-3"><p>Posto ' + id + '</p></div>');
-                var selectDiv = $("<div></div>").addClass("col-sm-9");
-                var select = $("<select></select>").addClass("form-control").attr("name", "tipo-biglietto");
-                select.append(
-            <c:forEach var="prezzo" items="${requestScope.prezzi}">
-                '<option' <c:if test="${prezzo.tipo == 'normale'}"> + ' selected'</c:if> + ' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>' +
-            </c:forEach>
-                    '');
-                selectDiv.append(select);
-                contentRow.append(selectDiv);
-
-                postoLI.append(contentRow);
-                $(".posti-selezionati").append(postoLI);
-
-                //console.log("asd");
-            }).on('click', '.posto-selected', function () { // Click su un posto selezionato
-                $("#p" + $(this).attr("id")).remove();
-                $(this).addClass("posto-l").removeClass("posto-selected");
-                //console.log("lol");
-            });
-            
-            /* cambiamento di un campo 'select'...
-            $(document.body).on('change', 'select', function () {
-                    console.log("asd");
-            }        
-            );*/
-
-            
-            /*
-             $(document).ready(function () {
-             $(".posto-l").on("click", function () {
-             //$(this).toggleClass("posto-selected");
-             $(this).addClass("posto-selected").removeClass("posto-l");
-             $(".posti-selezionati").append('<li id="p' + $(this).attr("id") + '">Posto: ' + $(this).attr("id") + "</li>");
-             console.log("asd");
-             });
-             $(".posto-selected").on("click", function () {
-             //$(this).toggleClass("posto-selected");
-             $("#p"+$(this).attr("id")).remove();
-             $(this).addClass("posto-l").removeClass("posto-selected");
-             console.log("lol");
-             });
-             });
-             */
-        </script>
 
     </head>
     <body>
@@ -178,7 +121,7 @@
                             <div class="col-xs-1"><div class="posto posto-selected-ex"></div></div>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <!-- Lista dei posti selezionati -->
@@ -212,5 +155,43 @@
             </div>
 
         </div>
+
+        <%-- Include the footer --%>
+        <%@ include file="include/footer.jsp" %>
+
+        <script type="text/javascript">
+            // click su un posto libero
+            $(document.body).on('click', '.posto-l', function () {
+                $(this).addClass("posto-selected").removeClass("posto-l");
+                var id = $(this).attr("id");
+
+                var postoLI = $("<li></li>").addClass('li-posto').attr("id", "p" + id);
+                postoLI.append('<input type="hidden" name="id-posto" value="' + id + '" />');
+
+                var contentRow = $("<div></div>").addClass('row');
+                contentRow.append('<div class="col-sm-3"><p>Posto ' + id + '</p></div>');
+                var selectDiv = $("<div></div>").addClass("col-sm-9");
+                var select = $("<select></select>").addClass("form-control").attr("name", "tipo-biglietto");
+                select.append(
+            <c:forEach var="prezzo" items="${requestScope.prezzi}">
+                '<option' <c:if test="${prezzo.tipo == 'normale'}"> + ' selected'</c:if> + ' value = "${prezzo.idPrezzo}" >${prezzo.tipo} ${prezzo.prezzo}€ </option>' +
+            </c:forEach>
+                ''
+                        );
+                        selectDiv.append(select);
+                contentRow.append(selectDiv);
+
+                postoLI.append(contentRow);
+                $(".posti-selezionati").append(postoLI);
+
+                //console.log("asd");
+            }).on('click', '.posto-selected', function () { // Click su un posto selezionato
+                $("#p" + $(this).attr("id")).remove();
+                $(this).addClass("posto-l").removeClass("posto-selected");
+                //console.log("lol");
+            });
+
+        </script>
+
     </body>
 </html>

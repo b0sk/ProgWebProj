@@ -25,7 +25,7 @@
                     <c:forEach var="elemento" items="${sessionScope.carrello}">
                         <p>Posto ${elemento.key} - Tipo biglietto: ${elemento.value.tipo} ${elemento.value.prezzo}€ </p>
                     </c:forEach>
-                        
+
 
                     <h4>Totale: ${sessionScope.prezzoTotale} €</h4>     <!-- modificato per prendere dalla sessione invece che dalla request -->
 
@@ -55,11 +55,9 @@
             </div>
 
         </div>
-        <%--
-                <!-- include jQuery -->
-                <script src="js/jQuery/jquery-2.1.4.js"></script>
-                <!-- Latest compiled and minified JavaScript -->
-                <script src="bootstrap/js/bootstrap.min.js"></script>
-        --%>
+
+        <%-- Include the footer --%>
+        <%@ include file="include/footer.jsp" %>
+
     </body>
 </html>

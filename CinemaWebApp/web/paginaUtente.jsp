@@ -32,7 +32,7 @@
             </div>
 
             <br>
-            
+
             <h3>Lista prenotazioni:</h3>
             <table class="table table-striped table-hover">
                 <thead>
@@ -58,6 +58,9 @@
                 </tbody>
             </table>
         </div>
+
+        <%-- Include the footer --%>
+        <%@ include file="include/footer.jsp" %>
 
     </body>
 </html>

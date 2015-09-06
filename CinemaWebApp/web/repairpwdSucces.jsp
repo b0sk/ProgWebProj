@@ -29,5 +29,7 @@
             </div>    
         </div>
 
+        <%-- Include the footer --%>
+        <%@ include file="include/footer.jsp" %>
     </body>
 </html>

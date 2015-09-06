@@ -15,7 +15,7 @@
 
         <c:set var="film" value="${requestScope.film}" />
         <c:set var="genere" value="${requestScope.genere}" />
-        
+
     </head>
     <body>
         <div class="container">
@@ -54,4 +54,7 @@
 
         </div>
     </body>
+
+    <%-- Include the footer --%>
+    <%@ include file="include/footer.jsp" %>
 </html>
