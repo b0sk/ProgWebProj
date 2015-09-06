@@ -114,8 +114,12 @@ public class CheckoutServlet extends HttpServlet {
 
         //se l'untente non ha abbastanza credito
         if (credito < totalePagamento) {
+            // errore non abbastanza credito
+            request.setAttribute("exception", "Credito non sufficiente");
+            RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+            rd.forward(request, response);
             // errore
-            response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
+            // response.sendRedirect(request.getContextPath() + "/prenotazioneMessage.jsp");
         } else {
 
             // contiene una lista di oggetti biglietto per creare il file pdf
@@ -215,10 +219,15 @@ public class CheckoutServlet extends HttpServlet {
                 RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
                 rd.forward(request, response);
             } else {
-                // errore
+                // errore posto già prenotato
                 request.setAttribute("succes", 0);
                 RequestDispatcher rd = request.getRequestDispatcher("/prenotazioneMessage.jsp");
                 rd.forward(request, response);
+                
+                // errore posto prenotato
+                //request.setAttribute("exception", "Uno dei posti è già stato prenotato");
+                //RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
+                //rd.forward(request, response);
             }
 
         }
