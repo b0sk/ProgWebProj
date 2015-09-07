@@ -3,7 +3,6 @@ package servlet;
 import db.DBManager;
 import db.Utente;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;

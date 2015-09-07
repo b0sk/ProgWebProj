@@ -1,7 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:set var="page" value="errore"/>
+<c:set var="page" value="altro"/>
 
 <!DOCTYPE html>
 <html>

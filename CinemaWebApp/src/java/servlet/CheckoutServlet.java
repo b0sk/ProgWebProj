@@ -140,7 +140,7 @@ public class CheckoutServlet extends HttpServlet {
                 //se l'untente non ha abbastanza credito
                 if (credito < totalePagamento) {
                     // errore non abbastanza credito
-                    request.setAttribute("exception", "Credito non sufficiente");
+                    request.setAttribute("errorMessag", "Credito non sufficiente");
                     RequestDispatcher rd = request.getRequestDispatcher("/errore.jsp");
                     rd.forward(request, response);
                     // errore

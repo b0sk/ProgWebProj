@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <filter>
+        <filter-name>UserPageFilter</filter-name>
+        <filter-class>filters.UserPageFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>AdminPageFilter</filter-name>
+        <filter-class>filters.AdminPageFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AdminPageFilter</filter-name>
+        <url-pattern>/amministrazione.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AdminPageFilter</filter-name>
+        <servlet-name>AmministrazioneServlet</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserPageFilter</filter-name>
+        <url-pattern>/paginaUtente.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserPageFilter</filter-name>
+        <servlet-name>PaginaUtenteServlet</servlet-name>
+    </filter-mapping>
     <listener>
         <description>ServletContextListener</description>
         <listener-class>listeners.WebAppContextListener</listener-class>
