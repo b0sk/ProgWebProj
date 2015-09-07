@@ -42,7 +42,7 @@
                         <div class="radio">
                             <label>
                                 <input type="radio" name="tipoPagamento" id="optionsRadios2" value="creditoUtente">
-                                Credito utente (${sessionScope.utente.credito} €)
+                                Credito utente (<fmt:formatNumber value="${sessionScope.utente.credito}" minFractionDigits="2"/> &euro;)
                             </label> 
                         </div>
                         <input class="btn btn-primary" type="submit" value="Conferma"/>

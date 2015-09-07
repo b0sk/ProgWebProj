@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-sm-10 col-xs-7">
                     <h3>${utente.email}</h3>
-                    <h4>Credito: ${utente.credito} €</h4>
+                    <h4>Credito: <fmt:formatNumber value="${utente.credito}" minFractionDigits="2"/> &euro;</h4>
 
                 </div>
 
