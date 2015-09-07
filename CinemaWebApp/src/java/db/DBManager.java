@@ -193,7 +193,7 @@ public class DBManager implements Serializable {
     public List<Spettacolo> getSpettacoliAttiviByIdFilm(int idFilm) throws SQLException {
         List<Spettacolo> spettacoli = new ArrayList<Spettacolo>();
 
-        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ? AND DATA_ORA > CURRENT TIMESTAMP");
+        PreparedStatement stm = con.prepareStatement("SELECT * FROM Spettacolo WHERE ID_FILM = ? AND DATA_ORA > CURRENT TIMESTAMP ORDER BY DATA_ORA");
         try {
             stm.setString(1, Integer.toString(idFilm));
             ResultSet rs = stm.executeQuery();

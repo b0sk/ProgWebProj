@@ -157,10 +157,10 @@ public class SettaProgrammazione extends HttpServlet {
     }
 
     private void resetSpettacoli() throws ParseException, SQLException {
-        String time1 = "2015-10-24 14:00:00.0";
-        String time2 = "2015-10-24 17:00:00.0";
-        String time3 = "2015-10-24 20:00:00.0";
-        String time4 = "2015-10-24 23:00:00.0";
+        String time1 = "2015-10-10 14:00:00.0";
+        String time2 = "2015-10-10 17:00:00.0";
+        String time3 = "2015-10-10 20:00:00.0";
+        String time4 = "2015-10-10 23:00:00.0";
 
         //Timestamp t1 = new Timestamp(2015, 10, 24, 14, 00, 00, 00);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -190,11 +190,75 @@ public class SettaProgrammazione extends HttpServlet {
             manager.setDataOraSpettacolo(i, timestamp);
 
         }
+
+        time1 = "2015-10-11 14:00:00.0";
+        time2 = "2015-10-11 17:00:00.0";
+        time3 = "2015-10-11 20:00:00.0";
+        time4 = "2015-10-11 23:00:00.0";
+
+        for (int i = 22; i < 43; i++) {
+            // time1                
+            Date parsedDate = dateFormat.parse(time1);
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time2
+            i++;
+            parsedDate = dateFormat.parse(time2);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time3
+            i++;
+            parsedDate = dateFormat.parse(time3);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time4
+            i++;
+            parsedDate = dateFormat.parse(time4);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+        }
+
+        // nel passato..
+        time1 = "2015-06-11 14:00:00.0";
+        time2 = "2015-06-11 17:00:00.0";
+        time3 = "2015-06-11 20:00:00.0";
+        time4 = "2015-06-11 23:00:00.0";
+
+        for (int i = 42; i < 63; i++) {
+            // time1                
+            Date parsedDate = dateFormat.parse(time1);
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time2
+            i++;
+            parsedDate = dateFormat.parse(time2);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time3
+            i++;
+            parsedDate = dateFormat.parse(time3);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+            //time4
+            i++;
+            parsedDate = dateFormat.parse(time4);
+            timestamp = new Timestamp(parsedDate.getTime());
+            manager.setDataOraSpettacolo(i, timestamp);
+
+        }
+
     }
 
     private void impostaSpettacoli(int x) throws SQLException {
         for (int i = 3; i < 23; i++) {
-            System.out.println(i+"----------------");
+            //System.out.println(i + "----------------");
 
             //first
             // set the starting time to Current time + rand()*X minutes
@@ -205,19 +269,46 @@ public class SettaProgrammazione extends HttpServlet {
             Timestamp timestamp = new Timestamp(startTimeDate.getTime());
             manager.setDataOraSpettacolo(i, timestamp);
 
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+20, timestamp);
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+40, timestamp);
+            
             //second
             i++;
             startTime += x * 60 * 1000;
             startTimeDate = new Date(startTime);
             timestamp = new Timestamp(startTimeDate.getTime());
             manager.setDataOraSpettacolo(i, timestamp);
+            
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+20, timestamp);
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+40, timestamp);
 
             //third
             i++;
             startTime += x * 60 * 1000;
-            startTimeDate = new Date(startTime);            
+            startTimeDate = new Date(startTime);
             timestamp = new Timestamp(startTimeDate.getTime());
             manager.setDataOraSpettacolo(i, timestamp);
+            
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+20, timestamp);
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+40, timestamp);
 
             //fourth
             i++;
@@ -225,6 +316,15 @@ public class SettaProgrammazione extends HttpServlet {
             startTimeDate = new Date(startTime);
             timestamp = new Timestamp(startTimeDate.getTime());
             manager.setDataOraSpettacolo(i, timestamp);
+            
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+20, timestamp);
+            startTime += x * 60 * 1000;
+            startTimeDate = new Date(startTime);
+            timestamp = new Timestamp(startTimeDate.getTime());
+            manager.setDataOraSpettacolo(i+40, timestamp);
 
         }
 
