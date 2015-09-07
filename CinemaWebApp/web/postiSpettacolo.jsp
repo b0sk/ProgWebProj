@@ -73,6 +73,14 @@
             ul.posti-selezionati {
                 padding: 7px;
             }
+
+            .schermo{
+                text-align: center;
+                color: white;
+                border: 1px solid black;
+                background-color: #525252;
+                opacity: 0.8;
+            }
         </style>
 
 
@@ -84,6 +92,9 @@
 
             <h2>Seleziona i posti:</h2>
 
+            <div class="row">
+                <div class="col-xs-10 col-xs-offset-1 col-sm-5 col-sm-offset-1 schermo">Schermo</div>
+            </div>
             <div class="row">
                 <!-- Mappa dei posti -->
                 <div class="col-sm-7 col-xs-12">
@@ -125,7 +136,7 @@
                 </div>
 
                 <!-- Lista dei posti selezionati -->
-                <div class="col-sm-5 col-xs-12"  style="border: 1px solid black;">
+                <div class="col-sm-5 col-xs-12" id="containerSelezioni"  style="border: 1px solid black; border-radius: 5px; padding: 5px;">
                     <form method="POST" action="RiepilogoPrenotazioneServlet?idSpettacolo=${param["idSpettacolo"]}">
                         <ul class="posti-selezionati">
                             <%-- Esempio di li-posto %--%>
@@ -146,7 +157,7 @@
                         </ul>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
-                                <button type="submit" class="btn btn-default">Prenota</button>
+                                <button id="btnSubmit" type="submit" class="btn btn-default" disabled>Prenota</button>
                             </div>
                         </div>
                     </form>
@@ -184,11 +195,19 @@
                 postoLI.append(contentRow);
                 $(".posti-selezionati").append(postoLI);
 
-                //console.log("asd");
+                var submitButton = $("#btnSubmit");
+                submitButton.attr("disabled", false);
+
+
             }).on('click', '.posto-selected', function () { // Click su un posto selezionato
                 $("#p" + $(this).attr("id")).remove();
                 $(this).addClass("posto-l").removeClass("posto-selected");
-                //console.log("lol");
+
+                var containerSelezioni = $("#containerSelezioni");
+                var submitButton = $("#btnSubmit");
+                if (!(containerSelezioni.has('.li-posto').length)) {
+                    submitButton.attr("disabled", true);
+                }
             });
 
         </script>

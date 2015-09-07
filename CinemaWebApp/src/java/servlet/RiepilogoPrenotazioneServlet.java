@@ -1,14 +1,10 @@
 package servlet;
 
 import db.DBManager;
-import db.Posto;
 import db.Prezzo;
 import db.Utente;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -37,7 +33,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-     throws ServletException, IOException {
+            throws ServletException, IOException {
 
         Utente utente;
         int idUtente;
@@ -53,60 +49,65 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         utente = (Utente) session.getAttribute("utente");
 
-        idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
-        strIdPrezzi = request.getParameterValues("tipo-biglietto");
-        strIdPosti = request.getParameterValues("id-posto");
+        if (request.getParameter("idSpettacolo") == null) {
+            //error
+            System.out.println("ERRORE");
+            response.sendRedirect(request.getContextPath() + "/errore.jsp");
+        } else {
+            idSpettacolo = Integer.parseInt(request.getParameter("idSpettacolo"));
+
+            strIdPrezzi = request.getParameterValues("tipo-biglietto");
+            strIdPosti = request.getParameterValues("id-posto");
 
         //prezzi = new ArrayList();
-        //posti = new ArrayList();
-        carrello = new HashMap();
-        
-        try {
-            // popola la hashmap con id del Posto e il prezzo a lui associato
-            for (int i = 0; i < strIdPrezzi.length; i++) {
+            //posti = new ArrayList();
+            carrello = new HashMap();
+
+            try {
+                // popola la hashmap con id del Posto e il prezzo a lui associato
+                for (int i = 0; i < strIdPrezzi.length; i++) {
                 //prezzi.add(manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
-                //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
-                int idPosto = Integer.parseInt(strIdPosti[i]);
-                carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
-                //calcola il perzzo totale
-                prezzoTotale += carrello.get(idPosto).getPrezzo();
-                System.out.println(""+ prezzoTotale + " "+ carrello.get(idPosto).getPrezzo());
-                //System.err.println(""+ carrello.get(idPosto).getPrezzo());
-            }
+                    //posti.add(manager.getPostoById(Integer.parseInt(strIdPosti[i])));
+                    int idPosto = Integer.parseInt(strIdPosti[i]);
+                    carrello.put(idPosto, manager.getPrezzoById(Integer.parseInt(strIdPrezzi[i])));
+                    //calcola il perzzo totale
+                    prezzoTotale += carrello.get(idPosto).getPrezzo();
+                    System.out.println("" + prezzoTotale + " " + carrello.get(idPosto).getPrezzo());
+                    //System.err.println(""+ carrello.get(idPosto).getPrezzo());
+                }
 
             // setta i parametri della richiesta e passali a postiSpettacolo.jsp
-            //request.setAttribute("prezzi", prezzi);
-            
-            
-            //request.setAttribute("prezzoTotale", prezzoTotale);   tolto nn funziona correttamente
-            session.setAttribute("prezzoTotale", prezzoTotale);   //Questo funziona
-            //request.setAttribute("Id")
+                //request.setAttribute("prezzi", prezzi);
+                //request.setAttribute("prezzoTotale", prezzoTotale);   tolto nn funziona correttamente
+                session.setAttribute("prezzoTotale", prezzoTotale);   //Questo funziona
+                //request.setAttribute("Id")
 
-            session.setAttribute("carrello", carrello);
-            session.setAttribute("idSpettacoloCarrello", idSpettacolo);
-            //request.setAttribute("strIdPosti", strIdPosti);
+                session.setAttribute("carrello", carrello);
+                session.setAttribute("idSpettacoloCarrello", idSpettacolo);
+                //request.setAttribute("strIdPosti", strIdPosti);
 
-        } catch (Exception e) {
+            } catch (Exception e) {
             // redirect a pagina di erroreù
-            //System.out.println("LOL");
-            //response.sendRedirect(request.getContextPath() + "/errore.jsp");
-        }
+                //System.out.println("LOL");
+                //response.sendRedirect(request.getContextPath() + "/errore.jsp");
+            }
 
-        // controlla se l'utente è loggato
-        if (utente != null) {
+            // controlla se l'utente è loggato
+            if (utente != null) {
             //System.out.println("UTENTE loggato");
-            //idUtente = utente.getIdUtente();
-            RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
-            rd.forward(request, response);
-        } else {
+                //idUtente = utente.getIdUtente();
+                RequestDispatcher rd = request.getRequestDispatcher("/riepilogoPrenotazione.jsp");
+                rd.forward(request, response);
+            } else {
             // se l'utente non è loggato rimanda al login...
-            //System.out.println("UTENTE non loggato");
-            RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
-            rd.forward(request, response);
+                //System.out.println("UTENTE non loggato");
+                RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+                rd.forward(request, response);
+            }
         }
 
-     }
-    
+    }
+
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -118,7 +119,7 @@ public class RiepilogoPrenotazioneServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**

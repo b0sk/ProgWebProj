@@ -24,6 +24,11 @@
         <filter-name>UserPageFilter</filter-name>
         <servlet-name>PaginaUtenteServlet</servlet-name>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>UserPageFilter</filter-name>
+        <servlet-name>CheckoutServlet</servlet-name>
+    </filter-mapping>
+    
     <listener>
         <description>ServletContextListener</description>
         <listener-class>listeners.WebAppContextListener</listener-class>
